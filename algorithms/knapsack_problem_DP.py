@@ -45,8 +45,8 @@ def knapsack_problem_DP(items, capacity):
                 knapsack_table[i][w] = max(knapsack_table[i - 1][w],
                                            knapsack_table[i - 1]
                                            [w - item_weight] + item_value)
-
-    return knapsack_table[number_of_items][capacity]
+    optimal_value = knapsack_table[number_of_items][capacity]
+    return optimal_value
 
 
 class NegativeCapacityError(Exception):
