@@ -1,10 +1,134 @@
 import unittest
-from knapsack_problem_BnB import *
+import knapsack_problem_BnB
 
-class TestKnapsackBnBinnerFunctions(unittest.TestCase):
 
-	def test_calculate_value_weight_of_node():
-		pass
+class TestKnapsackBnB(unittest.TestCase):
+
+    def setUp(self):
+        self.items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        self.capacity = 16
+        self.problem_def = (self.items, self.capacity)
+
+
+
+
+
+class TestCalculateValueWeightOfNode(unittest.TestCase):
+
+    def setUp(self):
+        self.items = [(9, 5), (3, 2), (5, 5), (3, 4)]
+        self.capacity = 10
+        self.problem_def = (self.items, self.capacity)
+
+    def test_val_weight_of_node_1(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [None, None, None, None]
+        val_weight = knapsack_problem_BnB._calculate_value_weight_of_node(
+            self.problem_def, node)
+        self.assertEqual(val_weight[0], 0)
+        self.assertEqual(val_weight[1], 0)
+
+    def test_val_weight_of_node_2(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [1, None, None, None]
+        val_weight = knapsack_problem_BnB._calculate_value_weight_of_node(
+            self.problem_def, node)
+        self.assertEqual(val_weight[0], 9)
+        self.assertEqual(val_weight[1], 5)
+
+    def test_val_weight_of_node_3(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [1, 1, 0, None]
+        val_weight = knapsack_problem_BnB._calculate_value_weight_of_node(
+            self.problem_def, node)
+        self.assertEqual(val_weight[0], 12)
+        self.assertEqual(val_weight[1], 7)
+
+class TestCalculateUpperBound(unittest.TestCase):
+
+    def setUp(self):
+        self.items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        self.capacity = 16
+        self.problem_def = (self.items, self.capacity)
+
+    def test_upper_bound_of_node_1(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [1, 0, None, None]
+        node.value = 45
+        node.weight = 3
+        upper_bound = knapsack_problem_BnB._calculate_upper_bound(
+            self.problem_def, node)
+        self.assertEqual(upper_bound, 98)
+
+    def test_upper_bound_of_node_2(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [None, None, None, None]
+        node.value = 0
+        node.weight = 0
+        upper_bound = knapsack_problem_BnB._calculate_upper_bound(
+            self.problem_def, node)
+        self.assertEqual(upper_bound, 115)
+
+    def test_upper_bound_of_node_3(self):
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [1, 1, 1, None]
+        node.value = 120
+        node.weight = 17
+        upper_bound = knapsack_problem_BnB._calculate_upper_bound(
+            self.problem_def, node)
+        self.assertEqual(upper_bound, -100)
+
+
+class TestGetHighestUpperBound(unittest.TestCase):
+
+    def test_highest_upper_bound(self):
+
+        node1 = knapsack_problem_BnB.Node()
+        node2 = knapsack_problem_BnB.Node()
+        node3 = knapsack_problem_BnB.Node()
+        node1.upper_bound = 20
+        node2.upper_bound = 30
+        node3.upper_bound = 10
+        live_nodes = [node1, node2, node3]
+
+        highest_upper_bound_node = knapsack_problem_BnB.\
+            _get_highest_upper_bound_node(live_nodes)
+
+        self.assertEqual(highest_upper_bound_node, node2)
+
+
+class TestFoundOptimalSolutionNode(unittest.TestCase):
+
+    def setUp(self):
+        self.items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        self.capacity = 16
+        self.problem_def = (self.items, self.capacity)
+
+        self.node1 = knapsack_problem_BnB.Node()
+        self.node1.branching_vector = [1, 0, None, None]
+        self.node1.upper_bound = 100
+
+        self.node2 = knapsack_problem_BnB.Node()
+        self.node2.branching_vector = [0, 1, 1, None]
+        self.node2.upper_bound = 60
+
+        self.node3 = knapsack_problem_BnB.Node()
+        self.node3.branching_vector = [1, 0, 1, 1]
+        self.node3.upper_bound = 70
+
+    def test_found_optimal_node_true(self):
+
+        node4 = knapsack_problem_BnB.Node()
+        node4.branching_vector = [1, 0, 1, 1]
+        node4.upper_bound = 110
+        live_nodes = [self.node1, self.node2, self.node3, node4]
+        self.assertTrue(knapsack_problem_BnB.
+                        _found_optimal_solution(live_nodes))
+
+    def test_found_optimal_node_false(self):
+        live_nodes = [self.node1, self.node2, self.node3]
+        self.assertFalse(knapsack_problem_BnB.
+                        _found_optimal_solution(live_nodes))
 
 
 if __name__ == '__main__':
