@@ -20,6 +20,8 @@ def knapsack_problem_BnB(items, capacity):
 
     _check_items_for_negative_values_weights(items)
 
+    items = sorted(items, key=lambda item: item[0]/item[1])[::-1]
+
     problem_definition = (items, capacity)
     number_of_items = len(items)
 
@@ -112,15 +114,6 @@ def _calculate_upper_bound(problem_def, node):
                 return upper_bound
 
     return upper_bound
-
-
-# def _check_for_optimal_node(live_nodes):
-#     candidate_node = _get_highest_upper_bound_node(live_nodes)
-
-#     if None not in candidate_node.branching_vector:
-#         return True, candidate_node
-#     else:
-#         return False, candidate_node
 
 
 def _get_highest_upper_bound_node(live_nodes):
