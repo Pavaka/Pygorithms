@@ -61,6 +61,12 @@ class TestKnapsackDPException(unittest.TestCase):
         with self.assertRaises(TypeError):
             knapsack_problem_DP(items, capacity)
 
+    def test_item_with_non_positive_value(self):
+        items = [(3, 4), (-2, 3), (4, 2), (4, 3)]
+        capacity = 5
+        with self.assertRaises(ItemWithNonPositiveValueError):
+            knapsack_problem_DP(items, capacity)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -15,6 +15,11 @@ def knapsack_problem_BnB(items, capacity):
 
     """
 
+    if capacity < 0:
+        raise NegativeCapacityError
+
+    _check_items_for_negative_values_weights(items)
+
     problem_definition = (items, capacity)
     number_of_items = len(items)
 
@@ -71,10 +76,6 @@ def knapsack_problem_BnB(items, capacity):
             live_nodes.append(left_child)
         if right_child.upper_bound != no_upper_bound_value:
             live_nodes.append(right_child)
-
-
-
-
 
 
 def _calculate_value_weight_of_node(problem_def, node):
@@ -147,11 +148,22 @@ def _find_childs_branching_vector(branching_vector):
     right_branching_vector[index] = 0
     return left_branching_vector, right_branching_vector
 
-# items = [(45, 3), (30, 5), (45, 9), (10, 5)]
-# capacity = 16
-# # # # answer = knapsack_problem_BnB(items, capacity)
-# # # prb_df=(items, capacity)
-# # # note = Node()
-# # # note.branching_vector = [1, None, None, None]
-# # # _calculate_value_weight_of_node(prb_df, note)
-# knapsack_problem_BnB(items, capacity)
+
+def _check_items_for_negative_values_weights(items):
+    for item in items:
+        if item[0] < 0:
+            raise NegativeValueItemError
+        elif item[1] < 0:
+            raise NegativeWeightItemError
+
+
+class NegativeCapacityError(Exception):
+    pass
+
+
+class NegativeValueItemError(Exception):
+    pass
+
+
+class NegativeWeightItemError(Exception):
+    pass

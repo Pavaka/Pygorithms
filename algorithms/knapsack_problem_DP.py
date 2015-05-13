@@ -35,6 +35,8 @@ def knapsack_problem_DP(items, capacity):
 
         if item_weight <= 0:
             raise ItemWithNonPositiveWeightError
+        if item_value < 0:
+            raise ItemWithNonPositiveValueError
 
         for current_max_capacity in range(capacity + 1):
             i = index
@@ -54,4 +56,8 @@ class NegativeCapacityError(Exception):
 
 
 class ItemWithNonPositiveWeightError(Exception):
+    pass
+
+
+class ItemWithNonPositiveValueError(Exception):
     pass

@@ -39,6 +39,43 @@ class TestKnapsackBnB(unittest.TestCase):
             knapsack_problem_BnB(items, capacity)[1]
         self.assertEqual(optimal_solution, [0, 0, 0, 0])
 
+    def test_negative_capacity_error(self):
+        items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        capacity = -5
+        with self.assertRaises(knapsack_problem_BnB.NegativeCapacityError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+    def test_negative_value_item_error(self):
+        items = [(45, 3), (30, 5), (-45, 9), (10, 5)]
+        capacity = 1
+        with self.assertRaises(knapsack_problem_BnB.NegativeValueItemError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+    def test_negative_weight_item_error(self):
+        items = [(45, 3), (30, 5), (45, 9), (10, -5)]
+        capacity = 1
+        with self.assertRaises(knapsack_problem_BnB.NegativeWeightItemError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+    def test_invalid_items_exmp_1(self):
+        items = "Items"
+        capacity = 1
+        with self.assertRaises(TypeError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+    def test_invalid_items_exmp_2(self):
+        items = [(45, 3), 3, (45, 9), (10, 5)]
+        capacity = 1
+        with self.assertRaises(TypeError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+    def test_invalid_capacity(self):
+        items = [(45, 3), 3, (45, 9), (10, 5)]
+        capacity = "This is not capacity"
+        with self.assertRaises(TypeError):
+            knapsack_problem_BnB.knapsack_problem_BnB(items, capacity)
+
+
 
 
 class TestCalculateValueWeightOfNode(unittest.TestCase):
