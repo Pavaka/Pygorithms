@@ -4,12 +4,40 @@ import knapsack_problem_BnB
 
 class TestKnapsackBnB(unittest.TestCase):
 
-    def setUp(self):
-        self.items = [(45, 3), (30, 5), (45, 9), (10, 5)]
-        self.capacity = 16
-        self.problem_def = (self.items, self.capacity)
+    # def setUp(self):
+    #     self.items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+    #     self.capacity = 16
+    #     self.problem_def = (self.items, self.capacity)
 
+    def test_optimal_value_exmp_1(self):
 
+        items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        capacity = 16
+        optimal_value = knapsack_problem_BnB.\
+            knapsack_problem_BnB(items, capacity)[0]
+        self.assertEqual(optimal_value, 90)
+
+    def test_optimal_solution_exmp_1(self):
+        items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        capacity = 16
+        optimal_solution = knapsack_problem_BnB.\
+            knapsack_problem_BnB(items, capacity)[1]
+        self.assertEqual(optimal_solution, [1, 0, 1, 0])
+
+    def test_optimal_value_exmp_2(self):
+
+        items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        capacity = 1
+        optimal_value = knapsack_problem_BnB.\
+            knapsack_problem_BnB(items, capacity)[0]
+        self.assertEqual(optimal_value, 0)
+
+    def test_optimal_solution_exmp_2(self):
+        items = [(45, 3), (30, 5), (45, 9), (10, 5)]
+        capacity = 1
+        optimal_solution = knapsack_problem_BnB.\
+            knapsack_problem_BnB(items, capacity)[1]
+        self.assertEqual(optimal_solution, [0, 0, 0, 0])
 
 
 
@@ -44,6 +72,7 @@ class TestCalculateValueWeightOfNode(unittest.TestCase):
         self.assertEqual(val_weight[0], 12)
         self.assertEqual(val_weight[1], 7)
 
+
 class TestCalculateUpperBound(unittest.TestCase):
 
     def setUp(self):
@@ -76,7 +105,17 @@ class TestCalculateUpperBound(unittest.TestCase):
         node.weight = 17
         upper_bound = knapsack_problem_BnB._calculate_upper_bound(
             self.problem_def, node)
-        self.assertEqual(upper_bound, -100)
+        self.assertEqual(upper_bound, knapsack_problem_BnB.
+                         no_upper_bound_value)
+
+    def test_upper_bound_no_solution(self):
+        self.capacity = 0
+        self.problem_def = (self.items, self.capacity)
+        node = knapsack_problem_BnB.Node()
+        node.branching_vector = [None, None, None, None]
+        upper_bound = knapsack_problem_BnB._calculate_upper_bound(
+            self.problem_def, node)
+        self.assertEqual(upper_bound, 0)
 
 
 class TestGetHighestUpperBound(unittest.TestCase):
@@ -128,7 +167,19 @@ class TestFoundOptimalSolutionNode(unittest.TestCase):
     def test_found_optimal_node_false(self):
         live_nodes = [self.node1, self.node2, self.node3]
         self.assertFalse(knapsack_problem_BnB.
-                        _found_optimal_solution(live_nodes))
+                         _found_optimal_solution(live_nodes))
+
+
+class TestFindBranchingVector(unittest.TestCase):
+
+    def test_left_right_branching_vectors(self):
+        branching_vector = [1, 0, 1, None]
+        result = knapsack_problem_BnB.\
+            _find_childs_branching_vector(branching_vector)
+        left_vector = result[0]
+        right_vector = result[1]
+        self.assertEqual(left_vector, [1, 0, 1, 1])
+        self.assertEqual(right_vector, [1, 0, 1, 0])
 
 
 if __name__ == '__main__':
