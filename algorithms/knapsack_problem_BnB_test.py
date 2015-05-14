@@ -1,5 +1,6 @@
 import unittest
 import knapsack_problem_BnB
+print(knapsack_problem_BnB)
 
 
 class TestKnapsackBnB(unittest.TestCase):

@@ -18,10 +18,10 @@ def knapsack_problem_DP(items, capacity):
     below it. If item weight is fraction it is rounded to the closes
     integer that is higher.
 """
+    _check_input_data(items, capacity)
+
     if capacity < 0:
         raise NegativeCapacityError
-
-    capacity = floor(capacity)
 
     number_of_items = len(items)
     knapsack_table = [[0 for x in range(capacity + 1)]
@@ -31,7 +31,7 @@ def knapsack_problem_DP(items, capacity):
         index += 1
 
         item_value = item[0]
-        item_weight = ceil(item[1])
+        item_weight = item[1]
 
         if item_weight <= 0:
             raise ItemWithNonPositiveWeightError
@@ -61,3 +61,32 @@ class ItemWithNonPositiveWeightError(Exception):
 
 class ItemWithNonPositiveValueError(Exception):
     pass
+
+
+class CapacityNotAnIntegerError(Exception):
+    pass
+
+
+class ItemsNotAListOrTupleError(Exception):
+    pass
+
+
+class InvalidItemError(Exception):
+    pass
+
+
+def _check_input_data(items, capacity):
+
+    if not isinstance(capacity, int):
+        raise CapacityNotAnIntegerError
+
+    if not isinstance(items, (list, tuple)):
+        raise ItemsNotAListOrTupleError
+
+    for item in items:
+        if not isinstance(items, (list, tuple)):
+            raise InvalidItemError
+        if len(item) != 2:
+            raise InvalidItemError
+        if not isinstance(item[0], int) or not isinstance(item[1], int):
+            raise InvalidItemError
