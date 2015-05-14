@@ -1,6 +1,3 @@
-from math import floor, ceil
-
-
 def knapsack_problem_DP(items, capacity):
     """Given a list of items (each item is a two-tuple with numbers
     (value, weight)), where every item has a value and weight ,
@@ -8,6 +5,7 @@ def knapsack_problem_DP(items, capacity):
     achieved from a subset of the items subject to the constraint
     of the capacity (the sum of all included items must be
     less than or equal to the capacity).
+
 
     Since list and tuple behave in the same way with respect to
     indexing the function can work with tuples and lists for items,
@@ -17,13 +15,16 @@ def knapsack_problem_DP(items, capacity):
     If capacity is fraction it is rounded to the closest integer
     below it. If item weight is fraction it is rounded to the closes
     integer that is higher.
-"""
+
+    The function returns a single integer value that represents the
+    optimal value.
+
+    The problem is solved using dynamic programming approach.
+    """
     _check_input_data(items, capacity)
 
-    if capacity < 0:
-        raise NegativeCapacityError
-
     number_of_items = len(items)
+
     knapsack_table = [[0 for x in range(capacity + 1)]
                       for x in range(number_of_items + 1)]
 
@@ -32,11 +33,6 @@ def knapsack_problem_DP(items, capacity):
 
         item_value = item[0]
         item_weight = item[1]
-
-        if item_weight <= 0:
-            raise ItemWithNonPositiveWeightError
-        if item_value < 0:
-            raise ItemWithNonPositiveValueError
 
         for current_max_capacity in range(capacity + 1):
             i = index
@@ -55,11 +51,11 @@ class NegativeCapacityError(Exception):
     pass
 
 
-class ItemWithNonPositiveWeightError(Exception):
+class ItemWithNegativeValueError(Exception):
     pass
 
 
-class ItemWithNonPositiveValueError(Exception):
+class ItemWithNegativeWeightError(Exception):
     pass
 
 
@@ -76,17 +72,35 @@ class InvalidItemError(Exception):
 
 
 def _check_input_data(items, capacity):
+    """ This is a function that checks if the given input
+    is correct. This means that the capacity must be an positive integer.
+    Items must be a list or tuple. All items in items must be
+    a list or a tupele of size two, and both elements inside have to
+    be integers greater that or equal to zero.
+    """
 
     if not isinstance(capacity, int):
         raise CapacityNotAnIntegerError
+
+    if capacity < 0:
+        raise NegativeCapacityError
 
     if not isinstance(items, (list, tuple)):
         raise ItemsNotAListOrTupleError
 
     for item in items:
-        if not isinstance(items, (list, tuple)):
+
+        if not isinstance(item, (list, tuple)):
             raise InvalidItemError
+
         if len(item) != 2:
             raise InvalidItemError
+
         if not isinstance(item[0], int) or not isinstance(item[1], int):
             raise InvalidItemError
+
+        if item[0] < 0:
+            raise ItemWithNegativeValueError
+
+        if item[1] < 0:
+            raise ItemWithNegativeWeightError

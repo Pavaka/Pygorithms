@@ -16,6 +16,18 @@ class TestKnapsackDPoptimality(unittest.TestCase):
         answer = knapsack_problem_DP.knapsack_problem_DP(items, capacity)
         self.assertEqual(answer, 40)
 
+    def test_knapsack_optimal_solution_exmp3(self):
+        items = [(1, 1), (6, 2), (18, 5), (22, 6), (28, 7)]
+        capacity = 0
+        answer = knapsack_problem_DP.knapsack_problem_DP(items, capacity)
+        self.assertEqual(answer, 0)
+
+    def test_knapsack_optimal_solution_exmp4(self):
+        items = []
+        capacity = 15
+        answer = knapsack_problem_DP.knapsack_problem_DP(items, capacity)
+        self.assertEqual(answer, 0)
+
 
 class TestKnapsackDPException(unittest.TestCase):
 
@@ -29,7 +41,7 @@ class TestKnapsackDPException(unittest.TestCase):
         items = [(3, 4), (2, 3), (4, -2), (4, -3)]
         capacity = 6
         with self.assertRaises(knapsack_problem_DP.
-                               ItemWithNonPositiveWeightError):
+                               ItemWithNegativeWeightError):
             knapsack_problem_DP.knapsack_problem_DP(items, capacity)
 
     def test_capacity_NaN(self):
@@ -60,7 +72,13 @@ class TestKnapsackDPException(unittest.TestCase):
         items = [(3, 4), (-2, 3), (4, 2), (4, 3)]
         capacity = 5
         with self.assertRaises(knapsack_problem_DP.
-                               ItemWithNonPositiveValueError):
+                               ItemWithNegativeValueError):
+            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
+
+    def test_item_three_tuple(self):
+        items = [(3, 4), (2, 3), (4, 2), (4, 3, 7)]
+        capacity = 6
+        with self.assertRaises(knapsack_problem_DP.InvalidItemError):
             knapsack_problem_DP.knapsack_problem_DP(items, capacity)
 
 

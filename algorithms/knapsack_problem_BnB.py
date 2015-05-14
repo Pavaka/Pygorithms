@@ -1,5 +1,10 @@
 class Node:
 
+    """
+    A class that represents Node. It is initiallized
+    as empty Node and its attributes valeus are changed dynamically.
+    """
+
     def __init__(self):
         self.value = 0
         self.weight = 0
@@ -11,14 +16,31 @@ no_upper_bound_value = -100
 
 
 def knapsack_problem_BnB(items, capacity):
+    """Given a list of items (each item is a two-tuple with numbers
+    (value, weight)), where every item has a value and weight ,
+    finds the highest value that can be
+    achieved from a subset of the items subject to the constraint
+    of the capacity (the sum of all included items must be
+    less than or equal to the capacity).
+
+    Since list and tuple behave in the same way with respect to
+    indexing the function can work with tuples and lists for items,
+    and each item can be a two-tuple or list of size 2.
+
+    Weights and capacity have to be positive integers.
+    If capacity is fraction it is rounded to the closest integer
+    below it. If item weight is fraction it is rounded to the closes
+    integer that is higher.
+
+    The function returns a tuple with optimal value and optimal solution
+    where optimal value is a positive integer, and optimal solution is a
+    list with items with value (0 or 1).
+
+    The problem is solved using branch and bound algorithm that treverses
+    through nodes untill it finds the optimal solution.
     """
 
-    """
-
-    if capacity < 0:
-        raise NegativeCapacityError
-
-    _check_items_for_negative_values_weights(items)
+    _check_input_data(items, capacity)
 
     items = sorted(items, key=lambda item: item[0]/item[1])[::-1]
 
@@ -81,8 +103,13 @@ def knapsack_problem_BnB(items, capacity):
 
 
 def _calculate_value_weight_of_node(problem_def, node):
+    """
+    Function that takes a Node with his branching vector set
+    and calculates the value and weight attributes of that Node.
+    problem_def is a tuple (items, capacity) which represent the
+    original optimizaiton problem.
+    """
     items = problem_def[0]
-    # capacity = problem_def[1]
     number_of_items = len(items)
     sub_vercotr = [node.branching_vector[i] for i in
                    range(number_of_items) if node.branching_vector[i] != None]
@@ -95,6 +122,13 @@ def _calculate_value_weight_of_node(problem_def, node):
 
 
 def _calculate_upper_bound(problem_def, node):
+    """
+    A function that takes a Node that has his value , weight
+    and branching vector set, and calculates the upper bound of that
+    node with respect to the problem.
+    problem_def is a tuple (items, capacity) which represent the
+    original optimizaiton problem.
+    """
     items = problem_def[0]
     capacity = problem_def[1]
     upper_bound = node.value
@@ -117,6 +151,10 @@ def _calculate_upper_bound(problem_def, node):
 
 
 def _get_highest_upper_bound_node(live_nodes):
+    """
+    Function that takes a list of nodes and returns
+    the one with the highest upper bound value.
+    """
     highest_upper_bound_node = live_nodes[0]
     for node in live_nodes:
         if node.upper_bound > highest_upper_bound_node.upper_bound:
@@ -125,6 +163,11 @@ def _get_highest_upper_bound_node(live_nodes):
 
 
 def _found_optimal_solution(live_nodes):
+    """
+    Function that takes a list of Nodes and finds if the highest
+    upper bound node is optimal. The highest upper bound node is optimal
+    if there is no None value in it (thus the vector is complete).
+    """
     candidate_node = _get_highest_upper_bound_node(live_nodes)
 
     if None not in candidate_node.branching_vector:
@@ -134,6 +177,16 @@ def _found_optimal_solution(live_nodes):
 
 
 def _find_childs_branching_vector(branching_vector):
+    """
+    Function that takes a list that represent branching vector
+    and returns the branching vectors of both his children.
+    It will recieve a list that contains zero or more items
+    that are (0 or 1) followed by one or more None values.
+    This function will create two new lists that differ from the originla
+    branching vector by the value of the first encountered None value.
+    The left chlild will replace the first encountered
+    None with 1, and the right child with 0.
+    """
     index = branching_vector.index(None)
     left_branching_vector = branching_vector[:]
     left_branching_vector[index] = 1
@@ -142,21 +195,59 @@ def _find_childs_branching_vector(branching_vector):
     return left_branching_vector, right_branching_vector
 
 
-def _check_items_for_negative_values_weights(items):
-    for item in items:
-        if item[0] < 0:
-            raise NegativeValueItemError
-        elif item[1] < 0:
-            raise NegativeWeightItemError
-
-
 class NegativeCapacityError(Exception):
     pass
 
 
-class NegativeValueItemError(Exception):
+class ItemWithNegativeValueError(Exception):
     pass
 
 
-class NegativeWeightItemError(Exception):
+class ItemWithNegativeWeightError(Exception):
     pass
+
+
+class CapacityNotAnIntegerError(Exception):
+    pass
+
+
+class ItemsNotAListOrTupleError(Exception):
+    pass
+
+
+class InvalidItemError(Exception):
+    pass
+
+
+def _check_input_data(items, capacity):
+    """ This is a function that checks if the given input
+    is correct. This means that the capacity must be an positive integer.
+    Items must be a list or tuple. All items in items must be
+    a list or a tupele of size two, and both elements inside have to
+    be integers greater that or equal to zero.
+    """
+
+    if not isinstance(capacity, int):
+        raise CapacityNotAnIntegerError
+
+    if capacity < 0:
+        raise NegativeCapacityError
+
+    if not isinstance(items, (list, tuple)):
+        raise ItemsNotAListOrTupleError
+
+    for item in items:
+        if not isinstance(item, (list, tuple)):
+            raise InvalidItemError
+
+        if len(item) != 2:
+            raise InvalidItemError
+
+        if not isinstance(item[0], int) or not isinstance(item[1], int):
+            raise InvalidItemError
+
+        if item[0] < 0:
+            raise ItemWithNegativeValueError
+
+        if item[1] < 0:
+            raise ItemWithNegativeWeightError
