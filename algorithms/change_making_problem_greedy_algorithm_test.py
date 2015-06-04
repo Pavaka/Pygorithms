@@ -71,5 +71,12 @@ class TestCoinsExceptions(unittest.TestCase):
             CMP_greedy.change_making_problem_greedy_algorithm(
                 coin_denominations, money_amount)
 
+    def test_coin_denomination_empty_list(self):
+        coin_denominations = []
+        money_amount = 15
+        with self.assertRaises(CMP_greedy.EmptyCoinsListError):
+            CMP_greedy.change_making_problem_greedy_algorithm(
+                coin_denominations, money_amount)
+
 if __name__ == '__main__':
     unittest.main()

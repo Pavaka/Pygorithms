@@ -53,7 +53,8 @@ def check_input_data(coin_denominations, money_amount):
 
     if not isinstance(coin_denominations, (tuple, list)):
         raise CoinDenominationsNotAListOrTupleError
-
+    if len(coin_denominations) == 0:
+        raise EmptyCoinsListError
     for denomination in coin_denominations:
         if not isinstance(denomination, int):
             raise CoinDenominationNotAnIntegerError
@@ -82,4 +83,8 @@ class CoinDenominationNotAnIntegerError(Exception):
 
 
 class CoinDenominationNonPositiveError(Exception):
+    pass
+
+
+class EmptyCoinsListError(Exception):
     pass
