@@ -11,7 +11,7 @@ def change_making_problem_greedy_algorithm(coin_denominations, money_amount):
     This means that you will return 4 coins with the respective
     denominations.
     """
-    check_input_data(coin_denominations, money_amount)
+    _check_input_data(coin_denominations, money_amount)
 
     coin_denominations = sorted(coin_denominations, reverse=True)
 
@@ -37,7 +37,7 @@ def change_making_problem_greedy_algorithm(coin_denominations, money_amount):
                 current_coin_index += 1
 
 
-def check_input_data(coin_denominations, money_amount):
+def _check_input_data(coin_denominations, money_amount):
     """
     Funtion that checks the correctness of the given arguments.
     The function arguments are considered correct if,

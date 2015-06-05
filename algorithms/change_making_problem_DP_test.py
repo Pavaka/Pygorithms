@@ -5,11 +5,11 @@ import change_making_problem_DP as CMP_DP
 class TestCMPOptimality(unittest.TestCase):
 
     def test_CMP_optimality_exmp1(self):
-        coin_denominations = [4, 5, 6, 8]
+        coin_denominations = [1, 5, 6, 8]
         money_amount = 11
         answer = CMP_DP.change_making_problem_DP(
             coin_denominations, money_amount)
-        self.assertEqual(answer, 2)
+        self.assertEqual(answer, [6, 5])
 
 
 
