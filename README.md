@@ -5,7 +5,7 @@ The library contains:
 Optimization algorithms:
 - Knapsack problem solved with dynamic programming approach
 - Knapsack problem solved with branch and bound approach
-- Change making problem solved with dynamic programming approach (Currently not working)
+- Change making problem solved with dynamic programming approach
 - Change making problem solved with greedy algorithm approach 
 - Transportation problem solved with transportation table (Currently not working)
 - Simplex method for solving minimization problem with trivial starting vertecie (Currently not working)
