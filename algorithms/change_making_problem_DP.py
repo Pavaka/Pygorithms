@@ -57,7 +57,6 @@ def change_making_problem_DP(coin_denominations, money_amount):
         else:
             j -= coin_denominations[i]
             optimal_solution.append(coin_denominations[i])
-
     # return optimal_number_coins
 
 
@@ -67,3 +66,4 @@ def _check_input_data(coin_denominations, money_amount):
 
 class NoFeasibleSolutionError(Exception):
     pass
+

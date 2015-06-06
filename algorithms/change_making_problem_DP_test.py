@@ -11,6 +11,12 @@ class TestCMPOptimality(unittest.TestCase):
             coin_denominations, money_amount)
         self.assertEqual(answer, [6, 5])
 
+    def test_CMP_optimality_exmp2(self):
+        coin_denominations = [1, 3, 5, 12, 48]
+        money_amount = 15
+        answer = CMP_DP.change_making_problem_DP(
+            coin_denominations, money_amount)
+        self.assertEqual(answer, [12, 3])
 
 
 class TestCMPExceptions(unittest.TestCase):
