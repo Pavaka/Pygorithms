@@ -35,48 +35,5 @@ class TestCoinsExceptions(unittest.TestCase):
             CMP_greedy.change_making_problem_greedy_algorithm(
                 coin_denominations, money_amount)
 
-    def test_money_amount_not_integer(self):
-        coin_denominations = [1, 3, 5, 12, 48]
-        money_amount = "Money amount"
-        with self.assertRaises(CMP_greedy.MoneyAmountNotAnIntegerError):
-            CMP_greedy.change_making_problem_greedy_algorithm(
-                coin_denominations, money_amount)
-
-    def test_money_amount_non_positive(self):
-        coin_denominations = [1, 3, 5, 12, 48]
-        money_amount = 0
-        with self.assertRaises(CMP_greedy.NonPositiveMoneyAmountError):
-            CMP_greedy.change_making_problem_greedy_algorithm(
-                coin_denominations, money_amount)
-
-    def test_coin_denominations_not_list_tuple(self):
-        coin_denominations = {"one": 1}
-        money_amount = 15
-        with self.assertRaises(
-                CMP_greedy.CoinDenominationsNotAListOrTupleError):
-                    CMP_greedy.change_making_problem_greedy_algorithm(
-                        coin_denominations, money_amount)
-
-    def test_coin_denomination_not_integer(self):
-        coin_denominations = [1, 3, 5, "This is not an integer", 48]
-        money_amount = 15
-        with self.assertRaises(CMP_greedy.CoinDenominationNotAnIntegerError):
-            CMP_greedy.change_making_problem_greedy_algorithm(
-                coin_denominations, money_amount)
-
-    def test_coin_denomination_negative_int(self):
-        coin_denominations = [1, 3, -5, 16, 48]
-        money_amount = 15
-        with self.assertRaises(CMP_greedy.CoinDenominationNonPositiveError):
-            CMP_greedy.change_making_problem_greedy_algorithm(
-                coin_denominations, money_amount)
-
-    def test_coin_denomination_empty_list(self):
-        coin_denominations = []
-        money_amount = 15
-        with self.assertRaises(CMP_greedy.EmptyCoinsListError):
-            CMP_greedy.change_making_problem_greedy_algorithm(
-                coin_denominations, money_amount)
-
 if __name__ == '__main__':
     unittest.main()

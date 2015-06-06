@@ -28,59 +28,5 @@ class TestKnapsackDPoptimality(unittest.TestCase):
         answer = knapsack_problem_DP.knapsack_problem_DP(items, capacity)
         self.assertEqual(answer, 0)
 
-
-class TestKnapsackDPException(unittest.TestCase):
-
-    def test_negative_capacity(self):
-        items = [(3, 4), (2, 3), (4, 2), (4, 3)]
-        capacity = -6
-        with self.assertRaises(knapsack_problem_DP.NegativeCapacityError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_item_with_non_pisitive_weight(self):
-        items = [(3, 4), (2, 3), (4, -2), (4, -3)]
-        capacity = 6
-        with self.assertRaises(knapsack_problem_DP.
-                               ItemWithNegativeWeightError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_capacity_NaN(self):
-        items = [(3, 4), (2, 3), (4, 2), (4, 3)]
-        capacity = "Error"
-        with self.assertRaises(knapsack_problem_DP.CapacityNotAnIntegerError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_weight_NaN(self):
-        items = [(3, "four"), (2, 3), (4, 2), (4, 3)]
-        capacity = 6
-        with self.assertRaises(knapsack_problem_DP.InvalidItemError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_value_NaN(self):
-        items = [(3, 4), ("two", 3), (4, 2), (4, 3)]
-        capacity = 6
-        with self.assertRaises(knapsack_problem_DP.InvalidItemError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_items_not_a_list(self):
-        items = 3
-        capacity = 6
-        with self.assertRaises(knapsack_problem_DP.ItemsNotAListOrTupleError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_item_with_non_positive_value(self):
-        items = [(3, 4), (-2, 3), (4, 2), (4, 3)]
-        capacity = 5
-        with self.assertRaises(knapsack_problem_DP.
-                               ItemWithNegativeValueError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-    def test_item_three_tuple(self):
-        items = [(3, 4), (2, 3), (4, 2), (4, 3, 7)]
-        capacity = 6
-        with self.assertRaises(knapsack_problem_DP.InvalidItemError):
-            knapsack_problem_DP.knapsack_problem_DP(items, capacity)
-
-
 if __name__ == '__main__':
     unittest.main()
