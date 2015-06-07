@@ -28,5 +28,6 @@ class TestKnapsackDPoptimality(unittest.TestCase):
         answer = knapsack_problem_DP.knapsack_problem_DP(items, capacity)
         self.assertEqual(answer, 0)
 
+
 if __name__ == '__main__':
     unittest.main()
