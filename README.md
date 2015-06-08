@@ -1,5 +1,7 @@
 # Algorithms-Python
 Library containing algorithms that solve math related problems.
+To use the library you just need to import the algorithms module
+or some part of its content and use the desired algorithm function.
 The library contains:
 
 Optimization algorithms:
