@@ -2,10 +2,11 @@
 Library containing algorithms that solve math related problems.
 To use the library you just need to import the algorithms module
 or some part of its content and use the desired algorithm function.
-Install with:
-pip install Algorithms
-Example usage
-from algoritthms.knapsack_problem_DP import knapsack_problem_DP as KPDP 
+ Install with:
+ -pip install Algorithms
+ Example usage
+ - from algoritthms.knapsack_problem_DP import knapsack_problem_DP as KPDP 
+
 The library contains:
 
 Optimization algorithms:
