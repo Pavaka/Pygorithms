@@ -13,7 +13,7 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     table_rows = len(vector_a)
     table_columns = len(vector_b)
     costs = convert_costs_to_two_dimensional(costs, table_rows, table_columns)
-    transportation_table, balancing_flag = create_transportation_table(costs, vector_a, vector_b)
+    transportation_table, balancing_flag, vector_a, vector_b = create_transportation_table(costs, vector_a, vector_b)
 
 
 def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
@@ -27,14 +27,11 @@ def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
 
 
 def create_transportation_table(costs, vector_a, vector_b):
-    sum_vecotr_a = 0
-    sum_vecotr_b = 0
-    for value in vector_a:
-        sum_vecotr_a += value
-    for value in vector_b:
-        sum_vecotr_b += value
 
+    sum_vecotr_a = sum(vector_a)
+    sum_vecotr_b = sum(vector_b)
     difference_between_vectors_sums = abs(sum_vecotr_a - sum_vecotr_b)
+
     if sum_vecotr_a > sum_vecotr_b:
         balancing_flag = balancing_flags[2]
         vector_b.append(difference_between_vectors_sums)
