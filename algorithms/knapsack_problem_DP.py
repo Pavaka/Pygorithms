@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
 from input_checkers.KP_input_chekcer import *
 
 

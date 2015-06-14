@@ -8,7 +8,7 @@ setup(
     description=("A library that solves math related problems."),
     license="GPL",
     url="https://github.com/Pavaka/Algorithms-Python",
-    # packages=['an_example_pypi_project', 'tests'],
+    packages=['algorithms', 'input_checkers'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3.4",

@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
 from input_checkers.CMP_input_checker import *
 
 
@@ -22,7 +25,7 @@ def change_making_problem_DP(coin_denominations, money_amount):
                 DP_table[i][j] = DP_table[i - 1][j]
             else:
 
-                upper_cell = DP_table[i-1][j]
+                upper_cell = DP_table[i - 1][j]
                 lefter_cell = DP_table[i][j - coin_denominations[i]]
 
                 upper_cell_is_integer = False
@@ -69,4 +72,3 @@ def _check_input_data(coin_denominations, money_amount):
 
 class NoFeasibleSolutionError(Exception):
     pass
-

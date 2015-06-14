@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
 from input_checkers.CMP_input_checker import *
 
 

@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-path = os.path.abspath("../algorithms/input_checkers")
+path = os.path.abspath("../input_checkers")
 sys.path.append(path)
 from CMP_input_checker import *
 
