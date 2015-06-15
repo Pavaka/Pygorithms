@@ -1,4 +1,4 @@
-def _check_input_data(items, capacity):
+def check_input_data(items, capacity):
     """ This is a function that checks if the given input
     is correct. This means that the capacity must be an positive integer.
     Items must be a list or tuple. All items in items must be
@@ -55,7 +55,7 @@ class ItemsNotAListOrTupleError(Exception):
 class InvalidItemError(Exception):
     pass
 
-__all__ = ["_check_input_data", "NegativeCapacityError",
+__all__ = ["check_input_data", "NegativeCapacityError",
            "ItemWithNegativeValueError",
            "ItemWithNegativeWeightError",
            "CapacityNotAnIntegerError",

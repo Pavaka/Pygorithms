@@ -17,7 +17,7 @@ def change_making_problem_greedy_algorithm(coin_denominations, money_amount):
     This means that you will return 4 coins with the respective
     denominations.
     """
-    _check_input_data(coin_denominations, money_amount)
+    check_input_data(coin_denominations, money_amount)
 
     coin_denominations = sorted(coin_denominations, reverse=True)
 

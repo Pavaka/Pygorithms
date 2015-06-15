@@ -6,7 +6,7 @@ from input_checkers.CMP_input_checker import *
 
 def change_making_problem_DP(coin_denominations, money_amount):
 
-    _check_input_data(coin_denominations, money_amount)
+    check_input_data(coin_denominations, money_amount)
 
     coin_denominations = sorted(coin_denominations)
     DP_table = [[0 for _ in range(money_amount + 1)]

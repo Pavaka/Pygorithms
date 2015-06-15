@@ -1,5 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
+from input_checkers.TP_input_checker import *
+
 balancing_flags = ("balanced", "additional row", "additional column")
-no_next_None_cell = "No next None cell", "No next None cell"
+no_next_None_cell = ("No next None cell", "No next None cell")
 
 
 class TransportationCell:
@@ -10,9 +15,36 @@ class TransportationCell:
 
 
 def transportation_problem(costs=None, vector_a=None, vector_b=None):
-    # check_input(costs, vector_a, vector_b)
+    """
+    Function takes 3 arguments : (costs=None,vector_a=None, vector_b=None)
+
+    keyword argument costs : a list of costs [c11, c12, .. ,cij]
+    where c11 is the transportation cost between A1 and B1
+    and cij is the transportation cost between Ai and Bj
+
+    keyword argument vector_a: list which contains the constraint
+    values [A1, A2 ...Ai] where
+    A1 = x11 + x12 ... x1j
+    Ai = xi1 + xi2 ... xij
+
+    keyword argument vector_b: list which contains the constraint
+    values [B1, B2 ...Bi] where
+    B1 = x11 + x21 ... xi1
+    Bj = x1j + x2j ... xij
+
+    The function solves the minimum cost transportation transportation.
+    For the passed vectors to be compitible
+    vector_a * vector_b  must be equal to the size of vector costs
+    The function returns A DE ?
+
+    """
+    check_input_data(costs, vector_a, vector_b)
     table_rows = len(vector_a)
     table_columns = len(vector_b)
+
+    if table_rows * table_columns != len(costs):
+        raise VectorSizesError
+
     costs = convert_costs_to_two_dimensional(costs, table_rows, table_columns)
     empty_transportation_table, balancing_flag, vector_a, vector_b\
         = create_transportation_table(costs, vector_a, vector_b)
@@ -135,15 +167,20 @@ def find_next_not_None_cell(transportation_table, i, j):
             return i, j
 
 
-
 def find_cells_graph(transportation_table, i , j):
     graph_cells_coords = []
     graph_cells_coords.append((i, j))
 
     return []
 
+
 def calculate_cell_value(table_graph_cells):
     return bool
 
+
 def calculate_new_TT(transportation_table):
     return
+
+
+class VectorSizesError(Exception):
+    pass

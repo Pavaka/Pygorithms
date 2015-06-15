@@ -1,4 +1,4 @@
-def _check_input_data(coin_denominations, money_amount):
+def check_input_data(coin_denominations, money_amount):
     """
     Funtion that checks the correctness of the given arguments.
     The function arguments are considered correct if,
@@ -47,7 +47,7 @@ class EmptyCoinsListError(Exception):
     pass
 
 
-__all__ = ["_check_input_data", "EmptyCoinsListError",
+__all__ = ["check_input_data", "EmptyCoinsListError",
            "NonPositiveMoneyAmountError", "MoneyAmountNotAnIntegerError",
            "CoinDenominationNonPositiveError",
            "CoinDenominationNotAnIntegerError",

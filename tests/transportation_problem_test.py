@@ -8,7 +8,7 @@ from algorithms.transportation_problem import *
 
 class TestTransportationProblem(unittest.TestCase):
 
-    def test_cots_to_two_dimensional(self):
+    def test_costs_to_two_dimensional(self):
         costs = [i for i in range(1, 13)]
         table_rows = 3
         table_columns = 4
@@ -18,6 +18,20 @@ class TestTransportationProblem(unittest.TestCase):
         answer_returned = convert_costs_to_two_dimensional(
             costs, table_rows, table_columns)
         self.assertEqual(answer_returned, answer_expected)
+
+    def test_incompitible_vector_sizes_exmp1(self):
+        costs = [i for i in range(1, 13)]
+        vector_a = [100, 130, 170]
+        vector_b = [150, 120, 80, 50, 20]
+        with self.assertRaises(VectorSizesError):
+            transportation_problem(costs, vector_a, vector_b)
+
+    def test_incompitible_vector_sizes_exmp2(self):
+        costs = [i for i in range(1, 14)]
+        vector_a = [100, 130, 170]
+        vector_b = [150, 120, 80, 50]
+        with self.assertRaises(VectorSizesError):
+            transportation_problem(costs, vector_a, vector_b)
 
 
 class TestCreationTransportationTable(unittest.TestCase):

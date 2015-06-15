@@ -46,7 +46,7 @@ def knapsack_problem_BnB(items, capacity):
     through nodes untill it finds the optimal solution.
     """
 
-    _check_input_data(items, capacity)
+    check_input_data(items, capacity)
 
     items = sorted(items, key=lambda item: item[0]/item[1])[::-1]
 

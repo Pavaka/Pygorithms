@@ -27,7 +27,7 @@ def knapsack_problem_DP(items, capacity):
 
     The problem is solved using dynamic programming approach.
     """
-    _check_input_data(items, capacity)
+    check_input_data(items, capacity)
 
     number_of_items = len(items)
 
