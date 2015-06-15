@@ -1,4 +1,5 @@
 balancing_flags = ("balanced", "additional row", "additional column")
+no_next_None_cell = "No next None cell", "No next None cell"
 
 
 class TransportationCell:
@@ -17,6 +18,14 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
         = create_transportation_table(costs, vector_a, vector_b)
     transportation_table = find_first_transportation_table(
         empty_transportation_table, vector_a, vector_b)
+
+    transportation_table, found_optimal_solution = find_optimal_solution(transportation_table)
+
+    while not found_optimal_solution:
+        transportation_table, found_optimal_solution = find_optimal_solution(transportation_table)
+
+    # return otgovora po nqkakuv nachin
+
 
 
 
@@ -86,3 +95,55 @@ def find_first_transportation_table(transportation_table, vector_a, vector_b):
             i += 1
         elif vector_b[j] == 0:
             j += 1
+
+
+def find_optimal_solution(transportation_table):
+    i = 0
+    j = 0
+
+    while True:
+        i, j = find_next_not_None_cell(transportation_table, i, j)
+        if (i, j) == no_next_None_cell:
+            return transportation_table, True
+        elif i < len(transportation_table) - 1:
+            i += 1
+        elif j < len(transportation_table[0]) - 1:
+            j += 1
+
+        table_graph_cells = find_cells_graph(transportation_table, i, j)
+        is_positive_cell = calculate_cell_value(table_graph_cells)
+        if not is_positive_cell:
+            new_transportation_table = calculate_new_TT()
+            return new_transportation_table, False
+
+
+def find_next_not_None_cell(transportation_table, i, j):
+    table_rows = len(transportation_table)
+    table_columns = len(transportation_table[0])
+    while True:
+        if transportation_table[i][j].amount is not None:
+            if j < table_columns - 1:
+                j += 1
+                continue
+            elif j == table_columns - 1 and i < table_rows - 1:
+                j = 0
+                i += 1
+                continue
+            else:
+                return no_next_None_cell
+        else:
+            return i, j
+
+
+
+def find_cells_graph(transportation_table, i , j):
+    graph_cells_coords = []
+    graph_cells_coords.append((i, j))
+
+    return []
+
+def calculate_cell_value(table_graph_cells):
+    return bool
+
+def calculate_new_TT(transportation_table):
+    return
