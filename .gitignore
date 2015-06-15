@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+# Simple test
+tests/sample_test.py
+.idea/
