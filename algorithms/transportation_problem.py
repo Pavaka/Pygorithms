@@ -167,7 +167,7 @@ def find_next_not_None_cell(transportation_table, i, j):
             return i, j
 
 
-def find_cells_graph(transportation_table, i , j):
+def find_cells_graph(transportation_table, i, j):
     graph_cells_coords = []
     graph_cells_coords.append((i, j))
 
