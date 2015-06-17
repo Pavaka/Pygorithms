@@ -54,5 +54,48 @@ class TestSmallerFunctions(unittest.TestCase):
         optimality = SMLP._check_simplex_table_optimality(self.simplex_table)
         self.assertEqual(SMLP.simplex_table_statuses[0], optimality)
 
+    def test_find_key_element_exmp1(self):
+        key_element = SMLP._find_key_element(self.simplex_table)
+        self.assertEqual(key_element[0], 3)
+        self.assertEqual(key_element[1], [5, 0])
+
+
+
+class TestSimplexMethod(unittest.TestCase):
+
+    def setUp(self):
+        self.m = 100
+        self.function_coefficients = [-3, -1, 1, 0, 0, 0]
+        self.matrix_A = [[-2, 1, -1, 1, 0, 0],
+                         [1, -1, 1, 0, 1, 0],
+                         [3, 1, -1, 0, 0, 1]]
+        self.Xb = SMLP._calculate_Xb(self.matrix_A)
+        self.Cb = SMLP._calculate_Cb(self.function_coefficients, self.Xb)
+        self.simplex_table = SMLP.SimplexTable(self.function_coefficients, self.Xb, self.Cb)
+        self.simplex_table.core_table = self.matrix_A
+        self.simplex_table.B_slash = [4, 2, 22]
+        self.simplex_table.C_slash = SMLP._calculate_C_slash(self.simplex_table)
+
+    def test_calc_Xb(self):
+        self.assertEqual(self.simplex_table.Xb, [3, 4, 5])
+
+    def test_calc_Cb(self):
+        self.assertEqual(self.simplex_table.Cb, [0, 0, 0])
+
+    def test_calc_C_slash(self):
+
+        C_slash = [-3, -1, 1, 0, 0, 0, 0]
+        self.assertEqual(self.simplex_table.C_slash, C_slash)
+
+    def test_key_element(self):
+        key_element = SMLP._find_key_element(self.simplex_table)
+        self.assertEqual(key_element[0], 1)
+        self.assertEqual(key_element[1], [4, 0])
+        self.assertEqual(key_element[2], (1, 0))
+
+    def test_new_simplex_table(self):
+        new_simplex_table = SMLP._new_simplex_table(self.simplex_table)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -39,6 +39,8 @@ def simplex_method(problem_type, function_coefficients,
         elif simplex_table_status == simplex_table_statuses[1]:
             raise NoFeasibleSolutionError
 
+        simplex_table = new_simplex_table(simplex_table)
+
 
 def _calculate_Xb(matrix_A):
     matrix_rows = len(matrix_A)
@@ -122,6 +124,82 @@ def _check_simplex_table_optimality(simplex_table):
         return simplex_table_statuses[0]
     else:
         return simplex_table_statuses[2]
+
+
+def _find_key_element(simplex_table):
+    lowest_value = min(simplex_table.C_slash[:-1])
+    lowest_value_index = simplex_table.C_slash.index(lowest_value)
+    coefficient_column = []
+
+    for row in simplex_table.core_table:
+        coefficient_column.append(
+            row[lowest_value_index])
+
+    key_elemenent_candidates = []
+    for j in range(len(simplex_table.Xb)):
+        i = lowest_value_index
+        if simplex_table.core_table[i][j] > 0:
+            key_elemenent_candidates.append([simplex_table.core_table[i][j], j])
+
+    for element in key_elemenent_candidates:
+        element[0] = simplex_table.B_slash[element[1]] / element[0]
+
+    key_element_index = min(key_elemenent_candidates, key = lambda x: x[0])[1]
+    key_element = simplex_table.core_table[lowest_value_index][key_element_index]
+    out_of_basis_X = simplex_table.Xb[key_element_index]
+    going_in_basis_X = lowest_value_index
+
+    return key_element, [out_of_basis_X, going_in_basis_X], (key_element_index, lowest_value_index)
+
+def _new_simplex_table_Xb(Xb, basis_rotation):
+    index = Xb.index(basis_rotation[0])
+    Xb[index] = basis_rotation[1]
+    return Xb
+
+
+def _new_simplex_table(simplex_table):
+    key_element = _find_key_element(simplex_table)
+    new_Xb = _new_simplex_table_Xb(simplex_table.Xb, key_element[1])
+    new_Cb = _calculate_Cb(simplex_table.function_coefficients, new_Xb)
+    new_simplex_table = SimplexTable(
+        simplex_table.function_coefficients, new_Xb, new_Cb)
+    new_core_table = deepcopy(simplex_table.core_table)
+    new_B_slash = deepcopy(simplex_table.B_slash)
+
+    key_i = key_element[2][0]
+    key_j = key_element[2][1]
+    # new key row
+    for j in range(len(simplex_table.function_coefficients)):
+        new_core_table[key_i][j] = simplex_table.core_table[key_i][j]/key_element[0]
+
+    new_B_slash[key_i] = simplex_table.B_slash[key_i]/key_element[0]
+    print(simplex_table.core_table)
+    print(key_i, key_j)
+    for k in range(len(simplex_table.B_slash)):
+        if k == key_i:
+            continue
+        for v in range(len(simplex_table.C_slash) - 1):
+            if v == len(simplex_table.C_slash) - 1:
+
+                try:
+                    # print("cacl b slash")
+                    new_B_slash[k] = key_element[0] - simplex_table.B_slash[key_i]*simplex_table.core_table[k][key_j]/simplex_table.B_slash[k]
+                    # print(k,v, "new_b slash", new_B_slash[k])
+
+                except ZeroDivisionError:
+                    new_B_slash[k] = 0 
+                continue
+
+            try:
+                new_core_table[k][v] = key_element[0] - simplex_table.core_table[key_i][v]*simplex_table.core_table[k][key_j]/simplex_table.core_table[k][v]
+                print("new core table", k, v, new_core_table[k][v], key_element[0], simplex_table.core_table[key_i][v], simplex_table.core_table[k][key_j], simplex_table.core_table[k][v])
+            except ZeroDivisionError:
+                new_core_table[k][v] = 0
+                print("new core table zero ZeroDivisionError")
+
+
+    print(new_core_table, new_B_slash)
+
 
 
 
