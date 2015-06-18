@@ -16,15 +16,21 @@ class SimplexTable:
         self.C_slash = None
 
 
-def simplex_method(problem_type, function_coefficients,
-                   matrix_A, signs_vector, vector_B, non_negative_constraints):
-    pass
-
+def simplex_method(function_coefficients, matrix_A,
+                   vector_B, problem_type="min",
+                   signs_vector=None,
+                   non_negative_constraints=None):
+    if signs_vector is None:
+        signs_vector = [sings[0] for _ in range(len(vector_B))]
+    if non_negative_constraints is None:
+        non_negative_constraints = [True for _ in range(
+            len(function_coefficients))]
+    
     # CHECK INPUT DATA
     # POSSIBLE CONVRSION OT CANONICAL format
 
     Xb = _calculate_Xb(matrix_A)
-    Cb = _calculate_Cb(Xb)
+    Cb = _calculate_Cb(function_coefficients, Xb)
     first_simplex_table = SimplexTable(function_coefficients, Xb, Cb)
     first_simplex_table.core_table = matrix_A  # DEEP copy minght not be needed
     first_simplex_table.B_slash = vector_B
@@ -35,11 +41,11 @@ def simplex_method(problem_type, function_coefficients,
         simplex_table_status = _check_simplex_table_optimality(simplex_table)
 
         if simplex_table_status == simplex_table_statuses[0]:
-            return _get_optimal_solution(problem_type, simplex_table)
+            return _get_optimal_solution(simplex_table, problem_type)
         elif simplex_table_status == simplex_table_statuses[1]:
             raise NoFeasibleSolutionError
 
-        simplex_table = new_simplex_table(simplex_table)
+        simplex_table = _new_simplex_table(simplex_table)
 
 
 def _calculate_Xb(matrix_A):
@@ -86,14 +92,13 @@ def _calculate_C_slash(simplex_table):
     return C_slash
 
 
-def _get_optimal_solution(simplex_table, problem_type="min"):
+def _get_optimal_solution(simplex_table, problem_type):
     if problem_type == problem_types[0]:
         optimal_value = -simplex_table.C_slash[-1]
     elif problem_type == problem_types[1]:
         optimal_value = -simplex_table.C_slash[-1]
 
     optimal_vertex = []
-
     for variable in range(len(simplex_table.function_coefficients)):
 
         if variable in simplex_table.Xb:
@@ -158,48 +163,35 @@ def _new_simplex_table_Xb(Xb, basis_rotation):
 
 
 def _new_simplex_table(simplex_table):
-    key_element = _find_key_element(simplex_table)
-    new_Xb = _new_simplex_table_Xb(simplex_table.Xb, key_element[1])
+    key_element, out_in_basis, key_coords = _find_key_element(simplex_table)
+
+    new_Xb = _new_simplex_table_Xb(simplex_table.Xb, out_in_basis)
     new_Cb = _calculate_Cb(simplex_table.function_coefficients, new_Xb)
     new_simplex_table = SimplexTable(
         simplex_table.function_coefficients, new_Xb, new_Cb)
     new_core_table = deepcopy(simplex_table.core_table)
     new_B_slash = deepcopy(simplex_table.B_slash)
 
-    key_i = key_element[2][0]
-    key_j = key_element[2][1]
-    # new key row
-    for j in range(len(simplex_table.function_coefficients)):
-        new_core_table[key_i][j] = simplex_table.core_table[key_i][j]/key_element[0]
+    key_i = key_coords[0]
+    key_j = key_coords[1]
 
-    new_B_slash[key_i] = simplex_table.B_slash[key_i]/key_element[0]
-    print(simplex_table.core_table)
-    print(key_i, key_j)
+    for k in range(len(simplex_table.B_slash)):
+        for v in range(len(simplex_table.function_coefficients)):
+            if k == key_i:
+                new_core_table[k][v] = simplex_table.core_table[k][v]/key_element
+            else:
+                new_core_table[k][v] = simplex_table.core_table[k][v] - (simplex_table.core_table[key_i][v]*simplex_table.core_table[k][key_j])/key_element
+
     for k in range(len(simplex_table.B_slash)):
         if k == key_i:
-            continue
-        for v in range(len(simplex_table.C_slash) - 1):
-            if v == len(simplex_table.C_slash) - 1:
+            new_B_slash[k] = simplex_table.B_slash[k]/key_element
+        else:
+            new_B_slash[k] = simplex_table.B_slash[k] - simplex_table.B_slash[key_i]*simplex_table.core_table[k][key_j]/key_element
 
-                try:
-                    # print("cacl b slash")
-                    new_B_slash[k] = key_element[0] - simplex_table.B_slash[key_i]*simplex_table.core_table[k][key_j]/simplex_table.B_slash[k]
-                    # print(k,v, "new_b slash", new_B_slash[k])
-
-                except ZeroDivisionError:
-                    new_B_slash[k] = 0 
-                continue
-
-            try:
-                new_core_table[k][v] = key_element[0] - simplex_table.core_table[key_i][v]*simplex_table.core_table[k][key_j]/simplex_table.core_table[k][v]
-                print("new core table", k, v, new_core_table[k][v], key_element[0], simplex_table.core_table[key_i][v], simplex_table.core_table[k][key_j], simplex_table.core_table[k][v])
-            except ZeroDivisionError:
-                new_core_table[k][v] = 0
-                print("new core table zero ZeroDivisionError")
-
-
-    print(new_core_table, new_B_slash)
-
+    new_simplex_table.core_table = new_core_table
+    new_simplex_table.B_slash = new_B_slash
+    new_simplex_table.C_slash = _calculate_C_slash(new_simplex_table)
+    return new_simplex_table
 
 
 
