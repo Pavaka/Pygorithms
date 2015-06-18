@@ -16,8 +16,8 @@ Optimization algorithms:
 - Knapsack problem solved with branch and bound approach
 - Change making problem solved with dynamic programming approach
 - Change making problem solved with greedy algorithm approach 
+- Simplex method for solving minimization problem with trivial starting vertecie 
 - Transportation problem solved with transportation table (Currently not working)
-- Simplex method for solving minimization problem with trivial starting vertecie (Currently not working)
 - Algorithm for converting a linear optimization problem
   into canonical form or in Big M method form. (Currently not working)
 - Algrorithm that takes a linear optimization problem in 
