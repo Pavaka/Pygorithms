@@ -28,6 +28,8 @@ def simplex_LP_covnert_to_trivial_starting_verticie_form(
     function_coefficients, matrix_A = _convert_to_big_M_form(
         function_coefficients, matrix_A)
 
+    return function_coefficients, matrix_A, vector_B
+
 
 def _add_new_variable_for_non_negativity(index, function_coefficients, matrix_A):
     function_coefficients.insert(index + 1, -function_coefficients[index])
@@ -71,6 +73,7 @@ def _make_RHS_non_negative(matrix_A, signs_vector, vector_B):
 
     return matrix_A, signs_vector, vector_B
 
+
 def _make_all_constraints_equations(function_coefficients, matrix_A, signs_vector):
     # print(function_coefficients,matrix_A, signs_vector)
 
@@ -88,7 +91,18 @@ def _make_all_constraints_equations(function_coefficients, matrix_A, signs_vecto
 
 
 def _convert_to_big_M_form(function_coefficients, matrix_A):
-    rows_need_artificial_variable = _rows_need_artificial_variable(function_coefficients, matrix_A)
+    rows_need_artificial_variable =\
+        _rows_need_artificial_variable(function_coefficients, matrix_A)
+
+    for row_index in rows_need_artificial_variable:
+        function_coefficients.append(big_M)
+        for i, row in enumerate(iter(matrix_A)):
+            if i == row_index:
+                row.append(1)
+                continue
+            row.append(0)
+
+    return function_coefficients, matrix_A
 
 
 def _rows_need_artificial_variable(function_coefficients, matrix_A):
@@ -111,7 +125,7 @@ def _rows_need_artificial_variable(function_coefficients, matrix_A):
                 row_of_positive_value = index
             elif value == 0:
                 continue
-        if found_single_positive_value:
+        if found_single_positive_value and row_of_positive_value in rows_need_artificial_variable:
             rows_need_artificial_variable.remove(row_of_positive_value)
 
     return rows_need_artificial_variable

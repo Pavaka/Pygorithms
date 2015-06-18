@@ -69,5 +69,12 @@ class TestSmallerFunctions(unittest.TestCase):
         self.matrix_A[0][1] = 0
         rows_need_artificial_variable = CF._rows_need_artificial_variable(self.function_coefficients, self.matrix_A)
         self.assertEqual(rows_need_artificial_variable, [0, 1, 2])
+
+    def test_convert_to_big_M_form(self):
+        function_coefficients, matrix_A = CF._convert_to_big_M_form(self.function_coefficients, self.matrix_A)
+        self.assertEqual(function_coefficients, [5, 7, -13, 18, -26, CF.big_M, CF.big_M])
+        self.assertEqual(matrix_A, [[3, 5, 0, -16, 0, 0, 0],
+                                    [-6, 0, -1, 1, -1, 1, 0],
+                                    [5, 0, -7, 1, -1, 0, 1]])
 if __name__ == '__main__':
     unittest.main()

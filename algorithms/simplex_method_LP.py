@@ -1,7 +1,16 @@
 from copy import deepcopy
+import sys
+import os
+path = os.path.abspath("../algorithms")
+sys.path.append(path)
+from simplex_LP_covnert_to_trivial_starting_verticie_form import\
+    simplex_LP_covnert_to_trivial_starting_verticie_form\
+        as convert_to_starting_form
+
 sings = ("le", "eq", "ge")
 simplex_table_statuses = ("Found optimal solution",
-                          "No feasible solution", "Next Simplex table")
+                          "No solution",
+                          "Next Simplex table")
 problem_types = ("min", "max")
 
 
@@ -17,18 +26,23 @@ class SimplexTable:
 
 
 def simplex_method(function_coefficients, matrix_A,
-                   vector_B, problem_type="min",
+                   vector_B, problem_type=problem_types[0],
                    signs_vector=None,
                    non_negative_constraints=None):
+    """
+
+    """
     if signs_vector is None:
-        signs_vector = [sings[0] for _ in range(len(vector_B))]
+        signs_vector = [sings[1] for _ in range(len(vector_B))]
     if non_negative_constraints is None:
         non_negative_constraints = [True for _ in range(
             len(function_coefficients))]
-    
+
     # CHECK INPUT DATA
     # POSSIBLE CONVRSION OT CANONICAL format
-
+    function_coefficients, matrix_A, vector_B = convert_to_starting_form(
+        function_coefficients, matrix_A, vector_B, problem_type,
+        signs_vector, non_negative_constraints)
     Xb = _calculate_Xb(matrix_A)
     Cb = _calculate_Cb(function_coefficients, Xb)
     first_simplex_table = SimplexTable(function_coefficients, Xb, Cb)
@@ -41,9 +55,10 @@ def simplex_method(function_coefficients, matrix_A,
         simplex_table_status = _check_simplex_table_optimality(simplex_table)
 
         if simplex_table_status == simplex_table_statuses[0]:
-            return _get_optimal_solution(simplex_table, problem_type)
+            return _get_optimal_solution(
+                simplex_table, problem_type, non_negative_constraints)
         elif simplex_table_status == simplex_table_statuses[1]:
-            raise NoFeasibleSolutionError
+            raise NoOptimalSolutionError
 
         simplex_table = _new_simplex_table(simplex_table)
 
@@ -92,11 +107,31 @@ def _calculate_C_slash(simplex_table):
     return C_slash
 
 
-def _get_optimal_solution(simplex_table, problem_type):
+def _get_optimal_solution(
+    simplex_table, problem_type, non_negative_constraints):
+
+
+
+    optimal_vertex = _calculate_optimal_vertex(
+        simplex_table, non_negative_constraints)
     if problem_type == problem_types[0]:
         optimal_value = -simplex_table.C_slash[-1]
     elif problem_type == problem_types[1]:
-        optimal_value = -simplex_table.C_slash[-1]
+        optimal_value = simplex_table.C_slash[-1]
+
+
+    return optimal_value, optimal_vertex
+
+
+def _calculate_optimal_vertex(
+        simplex_table, non_negative_constraints):
+
+    initial_variables_number = len(non_negative_constraints)
+    additional_real_variables_number = sum(
+        [1 for i in non_negative_constraints if i is False])
+    additional_artificial_variables_number =\
+        len(simplex_table.function_coefficients) - (
+            initial_variables_number + additional_real_variables_number)
 
     optimal_vertex = []
     for variable in range(len(simplex_table.function_coefficients)):
@@ -107,11 +142,34 @@ def _get_optimal_solution(simplex_table, problem_type):
         else:
             optimal_vertex.append(0)
 
-    return optimal_value, optimal_vertex
+    if additional_artificial_variables_number > 0:
+        artificial_variables_values = optimal_vertex[
+            -additional_artificial_variables_number:]
+    else:
+        artificial_variables_values = []
 
+    print("func koef", simplex_table.function_coefficients)
+    print("opt vert", optimal_vertex)
+    print("additional_artificial_variables_number,", additional_artificial_variables_number)
+    print("AAV", artificial_variables_values)
+    non_zero_artificial_variables_values = [
+        i for i in artificial_variables_values if i > 0]
+
+    print(non_zero_artificial_variables_values)
+    if non_zero_artificial_variables_values != []:
+        raise NoFeasibleSolutionError
+
+    if additional_artificial_variables_number > 0:
+        optimal_vertex = optimal_vertex[:-additional_artificial_variables_number]
+
+    for index, variable in enumerate(iter(non_negative_constraints)):
+        if variable is False:
+            optimal_vertex[index] = optimal_vertex[index] - optimal_vertex[index+1]
+            optimal_vertex.pop(index + 1)
+    return optimal_vertex
 
 def _check_simplex_table_optimality(simplex_table):
-    no_feasible_solution = False
+    no_optimal_solution = False
     C_slash_duplicate = []
     for i, value in enumerate(simplex_table.C_slash[:-1]):
         if value < 0:
@@ -119,11 +177,11 @@ def _check_simplex_table_optimality(simplex_table):
                 if simplex_table.core_table[i][j] >= 0:
                     break
                 if j == len(simplex_table.Xb) - 1:
-                    no_feasible_solution = True
+                    no_optimal_solution = True
             continue
         C_slash_duplicate.append(value)
 
-    if no_feasible_solution:
+    if no_optimal_solution:
         return simplex_table_statuses[1]
     elif len(C_slash_duplicate) == len(simplex_table.C_slash[:-1]):
         return simplex_table_statuses[0]
@@ -194,6 +252,9 @@ def _new_simplex_table(simplex_table):
     return new_simplex_table
 
 
+
+class NoOptimalSolutionError(Exception):
+    pass
 
 class NoFeasibleSolutionError(Exception):
     pass
