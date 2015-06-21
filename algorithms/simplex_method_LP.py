@@ -37,7 +37,7 @@ def simplex_method(function_coefficients, matrix_A,
     if non_negative_constraints is None:
         non_negative_constraints = [True for _ in range(
             len(function_coefficients))]
-
+    initial_signs_vector = signs_vector[:]
     # CHECK INPUT DATA
     # POSSIBLE CONVRSION OT CANONICAL format
     function_coefficients, matrix_A, vector_B = convert_to_starting_form(
@@ -50,13 +50,13 @@ def simplex_method(function_coefficients, matrix_A,
     first_simplex_table.B_slash = vector_B
     first_simplex_table.C_slash = _calculate_C_slash(first_simplex_table)
     simplex_table = first_simplex_table
-
     while True:
         simplex_table_status = _check_simplex_table_optimality(simplex_table)
 
         if simplex_table_status == simplex_table_statuses[0]:
             return _get_optimal_solution(
-                simplex_table, problem_type, non_negative_constraints)
+                simplex_table, problem_type, non_negative_constraints,
+                signs_vector)
         elif simplex_table_status == simplex_table_statuses[1]:
             raise NoOptimalSolutionError
 
@@ -108,30 +108,32 @@ def _calculate_C_slash(simplex_table):
 
 
 def _get_optimal_solution(
-    simplex_table, problem_type, non_negative_constraints):
-
-
+    simplex_table, problem_type, non_negative_constraints,
+        signs_vector):
 
     optimal_vertex = _calculate_optimal_vertex(
-        simplex_table, non_negative_constraints)
+        simplex_table, non_negative_constraints, signs_vector)
     if problem_type == problem_types[0]:
         optimal_value = -simplex_table.C_slash[-1]
     elif problem_type == problem_types[1]:
         optimal_value = simplex_table.C_slash[-1]
 
-
     return optimal_value, optimal_vertex
 
 
 def _calculate_optimal_vertex(
-        simplex_table, non_negative_constraints):
+        simplex_table, non_negative_constraints, signs_vector):
 
-    initial_variables_number = len(non_negative_constraints)
-    additional_real_variables_number = sum(
+    initial_variables_count = len(non_negative_constraints)
+    additional_negative_vars_count = sum(
         [1 for i in non_negative_constraints if i is False])
-    additional_artificial_variables_number =\
+    additional_not_eq_signs_equations_count = sum(
+        [1 for i in signs_vector if i != sings[1]])
+
+    additional_artificial_variables_count =\
         len(simplex_table.function_coefficients) - (
-            initial_variables_number + additional_real_variables_number)
+            initial_variables_count + additional_negative_vars_count +
+            additional_not_eq_signs_equations_count)
 
     optimal_vertex = []
     for variable in range(len(simplex_table.function_coefficients)):
@@ -142,31 +144,33 @@ def _calculate_optimal_vertex(
         else:
             optimal_vertex.append(0)
 
-    if additional_artificial_variables_number > 0:
+    if additional_artificial_variables_count > 0:
         artificial_variables_values = optimal_vertex[
-            -additional_artificial_variables_number:]
+            -additional_artificial_variables_count:]
     else:
         artificial_variables_values = []
 
-    print("func koef", simplex_table.function_coefficients)
-    print("opt vert", optimal_vertex)
-    print("additional_artificial_variables_number,", additional_artificial_variables_number)
-    print("AAV", artificial_variables_values)
     non_zero_artificial_variables_values = [
         i for i in artificial_variables_values if i > 0]
 
-    print(non_zero_artificial_variables_values)
     if non_zero_artificial_variables_values != []:
         raise NoFeasibleSolutionError
 
-    if additional_artificial_variables_number > 0:
-        optimal_vertex = optimal_vertex[:-additional_artificial_variables_number]
+    # if additional_artificial_variables_count > 0:
+    #     optimal_vertex = optimal_vertex[:-additional_artificial_variables_count]
+
+    optimal_vertex = optimal_vertex[:-additional_artificial_variables_count]\
+        or optimal_vertex
 
     for index, variable in enumerate(iter(non_negative_constraints)):
         if variable is False:
-            optimal_vertex[index] = optimal_vertex[index] - optimal_vertex[index+1]
+            optimal_vertex[index] = optimal_vertex[
+                index] - optimal_vertex[index+1]
             optimal_vertex.pop(index + 1)
+    optimal_vertex = optimal_vertex[
+        :-additional_not_eq_signs_equations_count] or optimal_vertex
     return optimal_vertex
+
 
 def _check_simplex_table_optimality(simplex_table):
     no_optimal_solution = False
