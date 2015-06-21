@@ -7,7 +7,7 @@ def simplex_LP_covnert_to_trivial_starting_verticie_form(
     function_coefficients, matrix_A,
         vector_B, problem_type, signs_vector,
         non_negative_constraints):
-
+    signs_vector = signs_vector[:]
     # convert to min problem
     if problem_type == problem_types[1]:
         function_coefficients =\
@@ -125,7 +125,8 @@ def _rows_need_artificial_variable(function_coefficients, matrix_A):
                 row_of_positive_value = index
             elif value == 0:
                 continue
-        if found_single_positive_value and row_of_positive_value in rows_need_artificial_variable:
-            rows_need_artificial_variable.remove(row_of_positive_value)
+        if found_single_positive_value and\
+            row_of_positive_value in rows_need_artificial_variable:
+                rows_need_artificial_variable.remove(row_of_positive_value)
 
     return rows_need_artificial_variable
