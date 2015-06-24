@@ -3,7 +3,7 @@ import sys
 import os
 path = os.path.abspath("..")
 sys.path.append(path)
-from algorithms import simplex_LP_covnert_to_trivial_starting_verticie_form as CF
+from pygorithms import simplex_LP_covnert_to_trivial_starting_verticie_form as CF
 
 
 class TestSmallerFunctions(unittest.TestCase):

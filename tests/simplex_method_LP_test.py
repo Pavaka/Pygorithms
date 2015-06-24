@@ -3,7 +3,7 @@ import sys
 import os
 path = os.path.abspath("..")
 sys.path.append(path)
-from algorithms import simplex_method_LP as SMLP
+from pygorithms import simplex_method_LP as SMLP
 
 
 class TestSmallerFunctions(unittest.TestCase):

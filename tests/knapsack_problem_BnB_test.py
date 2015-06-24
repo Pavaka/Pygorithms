@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-path = os.path.abspath("../algorithms")
+path = os.path.abspath("../pygorithms")
 sys.path.append(path)
 import knapsack_problem_BnB as KPBnB
 

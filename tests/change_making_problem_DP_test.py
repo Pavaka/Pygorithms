@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-path = os.path.abspath("../algorithms")
+path = os.path.abspath("../pygorithms")
 sys.path.append(path)
 import change_making_problem_DP as CMP_DP
 

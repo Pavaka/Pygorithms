@@ -3,7 +3,7 @@ import sys
 import os
 path = os.path.abspath("..")
 sys.path.append(path)
-from algorithms.transportation_problem import *
+from pygorithms.transportation_problem import *
 
 
 class TestTransportationProblem(unittest.TestCase):
