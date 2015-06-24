@@ -7,7 +7,7 @@ Install, with terminal open in the package directory use command:
  - python setup.py install
 
 Example usage:
- - from algorithms.knapsack_problem_DP import knapsack_problem_DP as KPDP 
+ - from pygorithms.knapsack_problem_DP import knapsack_problem_DP as KPDP 
 
 The library contains:
 
