@@ -7,7 +7,7 @@ setup(
     author_email="pavelsd@abv.bg",
     description=("A library that solves math related problems."),
     license="GPL",
-    url="https://github.com/Pavaka/Algorithms",
+    url="https://github.com/Pavaka/Pygorithms",
     packages=['algorithms', 'input_checkers'],
     classifiers=[
         "Development Status :: 3 - Alpha",
