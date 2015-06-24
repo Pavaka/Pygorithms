@@ -1,13 +1,13 @@
 from setuptools import setup
 
 setup(
-    name="Algorithms-Python",
+    name="Pygorithms",
     version="1.0.0",
     author="Pavel Dimitrov",
     author_email="pavelsd@abv.bg",
     description=("A library that solves math related problems."),
     license="GPL",
-    url="https://github.com/Pavaka/Algorithms-Python",
+    url="https://github.com/Pavaka/Algorithms",
     packages=['algorithms', 'input_checkers'],
     classifiers=[
         "Development Status :: 3 - Alpha",
