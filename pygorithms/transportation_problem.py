@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(".."))
-from input_checkers.TP_input_checker import *
+from input_checkers.TP_input_checker import check_input_data
 
 balancing_flags = ("balanced", "additional row", "additional column")
 no_next_None_cell = ("No next None cell", "No next None cell")

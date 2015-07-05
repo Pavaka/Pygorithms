@@ -1,4 +1,3 @@
-
 problem_types = ("min", "max")
 signs = ("le", "eq", "ge")
 
@@ -19,16 +18,22 @@ def check_input_data(function_coefficients, matrix_A, vector_B,
     if problem_type not in problem_types:
         raise ProblemTypeValueError
 
-    _all_values_numbers(function_coefficients)
+    try:
+        _all_values_numbers(function_coefficients)
+    except ValueNaNError:
+        raise FuncCoefValueError
 
     for row in matrix_A:
         if not isinstance(row, list):
             raise MatrixAValueError
-            for i in row:
-                if not isinstance(i, (int, float)):
-                    raise MatrixAValueError
+        for i in row:
+            if not isinstance(i, (int, float)):
+                raise MatrixAValueError
 
-    _all_values_numbers(vector_B)
+    try:
+        _all_values_numbers(vector_B)
+    except ValueNaNError:
+        raise VectorBValueError
 
     for value in signs_vector:
         if value not in signs:
@@ -39,10 +44,27 @@ def check_input_data(function_coefficients, matrix_A, vector_B,
             raise NonNegativeConstraintValueError
 
 
+    variables_count = set()
+    variables_count.add(len(function_coefficients))
+    for row in matrix_A:
+        variables_count.add(len(row))
+    variables_count.add(len(non_negative_constraints))
+    _check_incompitable_size(variables_count)
+    # if len(variables_count) > 1:
+    #     raise IncompitableVectorSizesError
+
+    constraints_count = set()
+    constraints_count.add(len(matrix_A))
+    constraints_count.add(len(vector_B))
+    constraints_count.add(len(signs_vector))
+    _check_incompitable_size(constraints_count)
 
 
 
 
+def _check_incompitable_size(item):
+    if len(item) > 1:
+        raise IncompitableVectorSizesError
 
 def _is_list(item):
     if item == []:
@@ -52,7 +74,6 @@ def _is_list(item):
 
 
 def _all_values_numbers(item):
-
 
     for value in item:
         if not isinstance(value, (int, float)):
@@ -64,6 +85,10 @@ class ValueNaNError(Exception):
 
 
 class NotAListError(Exception):
+    pass
+
+
+class IncompitableVectorSizesError(Exception):
     pass
 
 
@@ -109,3 +134,11 @@ class SignsVectorValueError(Exception):
 
 class NonNegativeConstraintValueError(Exception):
     pass
+
+
+# __all__ = ["check_input_data"]
+# # ,
+# # 'FuncCoefTypeError', 'FuncCoefValueError', 'IncompitableVectorSizesError', 'MatrixATypeError', 
+# # 'MatrixAValueError', 'NonNegativeConstraintTypeError', 'NonNegativeConstraintValueError', 
+# # 'ProblemTypeValueError', 'SignsVectorTypeError', 'SignsVectorValueError', 'VectorBTypeError',
+# #  'VectorBValueError']

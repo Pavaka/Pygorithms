@@ -45,10 +45,3 @@ class CoinDenominationNonPositiveError(Exception):
 
 class EmptyCoinsListError(Exception):
     pass
-
-
-__all__ = ["check_input_data", "EmptyCoinsListError",
-           "NonPositiveMoneyAmountError", "MoneyAmountNotAnIntegerError",
-           "CoinDenominationNonPositiveError",
-           "CoinDenominationNotAnIntegerError",
-           "CoinDenominationsNotAListOrTupleError"]

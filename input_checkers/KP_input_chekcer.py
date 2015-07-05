@@ -54,10 +54,3 @@ class ItemsNotAListOrTupleError(Exception):
 
 class InvalidItemError(Exception):
     pass
-
-__all__ = ["check_input_data", "NegativeCapacityError",
-           "ItemWithNegativeValueError",
-           "ItemWithNegativeWeightError",
-           "CapacityNotAnIntegerError",
-           "ItemsNotAListOrTupleError",
-           "InvalidItemError"]

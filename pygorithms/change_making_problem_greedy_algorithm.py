@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(".."))
-from input_checkers.CMP_input_checker import *
+from input_checkers.CMP_input_checker import check_input_data
 
 
 def change_making_problem_greedy_algorithm(coin_denominations, money_amount):

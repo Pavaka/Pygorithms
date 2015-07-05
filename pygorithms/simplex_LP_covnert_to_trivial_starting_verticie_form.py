@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(".."))
-from input_checkers.SM_input_checker import *
+from input_checkers.SM_input_checker import check_input_data
 
 signs = ("le", "eq", "ge")
 problem_types = ("min", "max")

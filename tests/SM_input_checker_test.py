@@ -15,12 +15,12 @@ class TestCheckInptutData(unittest.TestCase):
                          [2, -1]]
         self.vector_B = [2, 0, 1]
         self.problem_type = "min"
-        self.non_negative_constraints = [True, False]
         self.signs_vector = ["ge", "ge", "le"]
+        self.non_negative_constraints = [True, False]
         self.args = [self.function_coefficients, self.matrix_A,
                      self.vector_B, self.problem_type,
-                     self.non_negative_constraints,
-                     self.signs_vector]
+                     self.signs_vector,
+                     self.non_negative_constraints]
 
     def test_func_coef_type_error(self):
         self.args[0] = "not a list"
@@ -52,6 +52,42 @@ class TestCheckInptutData(unittest.TestCase):
         with self.assertRaises(ProblemTypeValueError):
             check_input_data(*self.args)
 
+    def test_func_coef_value_error(self):
+        self.args[0] = [1, 2, "NaN"]
+        with self.assertRaises(FuncCoefValueError):
+            check_input_data(*self.args)
+
+    def test_matrixA_value_error(self):
+        self.args[1] = [[1, -1],
+                        [1, "NaN"],
+                        [2, -1]]
+        with self.assertRaises(MatrixAValueError):
+            check_input_data(*self.args)
+
+    def test_vector_B_value_error(self):
+        self.args[2] = [1, 111, "not a list"]
+        with self.assertRaises(VectorBValueError):
+            check_input_data(*self.args)
+
+    def test_signs_vector_value_error(self):
+        self.args[4] = ["le", "ge", "me", 5]
+        with self.assertRaises(SignsVectorValueError):
+            check_input_data(*self.args)
+
+    def test_non_negative_constr_value_error(self):
+        self.args[5] = [True, False, 5]
+        with self.assertRaises(NonNegativeConstraintValueError):
+            check_input_data(*self.args)
+
+    def test_incompitable_vector_sizes_exmp1(self):
+        self.args[0] = [1]
+        with self.assertRaises(IncompitableVectorSizesError):
+            check_input_data(*self.args)
+
+    def test_incompitable_vector_sizes_exmp2(self):
+        self.args[4] = ["ge", "eq"]
+        with self.assertRaises(IncompitableVectorSizesError):
+            check_input_data(*self.args)
 
 if __name__ == '__main__':
     unittest.main()
