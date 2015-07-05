@@ -30,15 +30,68 @@ def simplex_method(function_coefficients, matrix_A,
                    signs_vector=None,
                    non_negative_constraints=None):
     """
+    Solves a any linear optimization problem using Simplex LP
+    The function takes 3 positional arguments and 3 keyword arguments
 
+    function_coefficients which is a list that contains the coefficients
+    of every variable of the problem
+    matrix_A which is a list which contains list that consist of numbers
+    every list in matrix_A represents a constraint and every constraint is
+    a list of numbers that are the coefficients of the variables in each 
+    constraint
+    vector_B is a list that represents the RHS of each constraint 
+    every number in the list corresponds to a constraint RHS
+    problem_type is a keyword argument that takses a string
+    which specifies the type of problem either a "min" or 
+    "max" problem by default the value is "min"
+    signs_vector is a list that consists of strings which 
+    represent each constraint signs possible options are
+    greater than or equal which is the string "ge"
+    less that or equal which is the string "le"
+    or equal which is the string "eq"
+    by default tha list consists of "eq" string this means
+    that all constraint are equations
+    non_negative_constraints is a list that consists of booleans
+    each boolean corresponds to a variable if it is True
+    then there is a non negativity constraint for the variable
+    by default all avariables are non negative thus the list 
+    is filled with values True
+
+    Example usage:
+    The mathematical problem:
+    min Z = -5*x1 + 2*x2
+    subject to the constraints
+    1*x1 -1*x2 >= 2
+    1*x1 -2*x2 >= 0
+    2*x1 -1*x2 <= 1
+    x1>=0
+
+    This porblem transforms to :
+        function_coefficients = [-5, 2]
+        matrix_A = [[1, -1],
+                    [1, -2],
+                    [2, -1]]
+        vector_B = [2, 0, 1]
+        problem_type = "min"
+        signs_vector = ["ge", "ge", "le"]
+        non_negative_constraints = [True, False]
+
+    when you call the function simplex_method
+    with the arguments in the order in the example
+    you will get a return value that is a tuple of two
+    elements the first one is the optimal value
+    and the second is a list that represents the coefficients
+    of the variables in the optimal solution
+    in case there is no optimal or feasible solution
+    an exception will be raised.
+    If there is an invalid input you will get and exception
+    depending on the input error that you have mede.
     """
     if signs_vector is None:
         signs_vector = [sings[1] for _ in range(len(vector_B))]
     if non_negative_constraints is None:
         non_negative_constraints = [True for _ in range(
             len(function_coefficients))]
-    # CHECK INPUT DATA
-    # POSSIBLE CONVRSION OT CANONICAL format
     function_coefficients, matrix_A, vector_B = convert_to_starting_form(
         function_coefficients, matrix_A, vector_B, problem_type,
         signs_vector, non_negative_constraints)
