@@ -37,7 +37,6 @@ def simplex_method(function_coefficients, matrix_A,
     if non_negative_constraints is None:
         non_negative_constraints = [True for _ in range(
             len(function_coefficients))]
-    initial_signs_vector = signs_vector[:]
     # CHECK INPUT DATA
     # POSSIBLE CONVRSION OT CANONICAL format
     function_coefficients, matrix_A, vector_B = convert_to_starting_form(
@@ -175,12 +174,12 @@ def _calculate_optimal_vertex(
 def _check_simplex_table_optimality(simplex_table):
     no_optimal_solution = False
     C_slash_duplicate = []
-    for i, value in enumerate(simplex_table.C_slash[:-1]):
+    for j, value in enumerate(iter(simplex_table.C_slash[:-1])):
         if value < 0:
-            for j in range(len(simplex_table.Xb)):
-                if simplex_table.core_table[i][j] >= 0:
+            for i in range(len(simplex_table.Xb)):
+                if simplex_table.core_table[i][j] > 0:
                     break
-                if j == len(simplex_table.Xb) - 1:
+                if i == len(simplex_table.Xb) - 1:
                     no_optimal_solution = True
             continue
         C_slash_duplicate.append(value)
@@ -203,10 +202,10 @@ def _find_key_element(simplex_table):
             row[lowest_value_index])
 
     key_elemenent_candidates = []
-    for j in range(len(simplex_table.Xb)):
-        i = lowest_value_index
+    for i in range(len(simplex_table.Xb)):
+        j = lowest_value_index
         if simplex_table.core_table[i][j] > 0:
-            key_elemenent_candidates.append([simplex_table.core_table[i][j], j])
+            key_elemenent_candidates.append([simplex_table.core_table[i][j], i])
 
     for element in key_elemenent_candidates:
         element[0] = simplex_table.B_slash[element[1]] / element[0]

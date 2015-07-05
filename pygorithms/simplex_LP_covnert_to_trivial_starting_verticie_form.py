@@ -1,12 +1,21 @@
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
+from input_checkers.SM_input_checker import *
+
 signs = ("le", "eq", "ge")
 problem_types = ("min", "max")
-big_M = 2 ** 32
+big_M = 2 ** 20
 
 
 def simplex_LP_covnert_to_trivial_starting_verticie_form(
     function_coefficients, matrix_A,
         vector_B, problem_type, signs_vector,
         non_negative_constraints):
+
+    check_input_data(function_coefficients, matrix_A, vector_B,
+                     problem_type, signs_vector, non_negative_constraints)
+
     signs_vector = signs_vector[:]
     # convert to min problem
     if problem_type == problem_types[1]:

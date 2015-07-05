@@ -44,7 +44,8 @@ class TestSmallerFunctions(unittest.TestCase):
         self.assertEqual(SMLP.simplex_table_statuses[2], optimality)
 
     def test_check_simplex_table_optimality_status_1(self):
-        self.simplex_table.core_table[1][0] = -5
+        self.simplex_table.core_table[0][1] = -5
+        self.simplex_table.core_table[1][1] = -3
         optimality = SMLP._check_simplex_table_optimality(self.simplex_table)
         self.assertEqual(SMLP.simplex_table_statuses[1], optimality)
 
@@ -60,7 +61,6 @@ class TestSmallerFunctions(unittest.TestCase):
         self.assertEqual(key_element[1], [5, 0])
 
 
-
 class TestSimplexMethodSteps(unittest.TestCase):
 
     def setUp(self):
@@ -71,10 +71,12 @@ class TestSimplexMethodSteps(unittest.TestCase):
         self.vector_B = [4, 6]
         self.Xb = SMLP._calculate_Xb(self.matrix_A)
         self.Cb = SMLP._calculate_Cb(self.function_coefficients, self.Xb)
-        self.simplex_table = SMLP.SimplexTable(self.function_coefficients, self.Xb, self.Cb)
+        self.simplex_table = SMLP.SimplexTable(
+            self.function_coefficients, self.Xb, self.Cb)
         self.simplex_table.core_table = self.matrix_A
         self.simplex_table.B_slash = [4, 6]
-        self.simplex_table.C_slash = SMLP._calculate_C_slash(self.simplex_table)
+        self.simplex_table.C_slash = SMLP._calculate_C_slash(
+            self.simplex_table)
 
     def test_calc_Xb(self):
         self.assertEqual(self.simplex_table.Xb, [5, 3])
@@ -101,10 +103,11 @@ class TestSimplexMethodSteps(unittest.TestCase):
         self.assertEqual(new_simplex_table.core_table, new_core_table)
         self.assertEqual(new_simplex_table.B_slash, [4/3, 14/3])
         new_C_slash = [0, 0, 0, 0, two, -2+self.m, -14]
-        self.assertEqual(new_simplex_table.C_slash,new_C_slash)
+        self.assertEqual(new_simplex_table.C_slash, new_C_slash)
 
     def test_simplex_method(self):
-        solution = SMLP.simplex_method(self.function_coefficients, self.matrix_A, self.vector_B)
+        solution = SMLP.simplex_method(
+            self.function_coefficients, self.matrix_A, self.vector_B)
         self.assertEqual(solution[0], 14)
         self.assertEqual(solution[1], [4/3, 0, 0, 14/3, 0, 0])
 
@@ -118,7 +121,8 @@ class TestSimplexMethodTestExamples(unittest.TestCase):
                     [0, 1, 0, 0, 0, 1, 0],
                     [1, -2, -1, 1, 0, 0, 0]]
         vector_B = [2, 4, 3]
-        solution = SMLP.simplex_method(function_coefficients, matrix_A, vector_B)
+        solution = SMLP.simplex_method(
+            function_coefficients, matrix_A, vector_B)
         self.assertEqual(solution[0], -7)
         self.assertEqual(solution[1], [2, 0, 0, 1, 0, 4, 0])
 
@@ -134,6 +138,34 @@ class TestSimplexMethodTestExamples(unittest.TestCase):
             non_negative_constraints)
         self.assertEqual(solution[0], -1)
         self.assertEqual(solution[1], [-1, 0])
+
+    def test_simplex_method_no_optimal_solution(self):
+        function_coefficients = [1, 0]
+        matrix_A = [[-1, 2],
+                    [-1, 1],
+                    [1, 1]]
+        vector_B = [0, 1, 1]
+        problem_type = "max"
+        non_negative_constraints = [True, True]
+        signs_vector = ["ge", "le", "ge"]
+        with self.assertRaises(SMLP.NoOptimalSolutionError):
+            solution = SMLP.simplex_method(function_coefficients,
+                matrix_A, vector_B, problem_type, signs_vector,
+                non_negative_constraints)
+
+    def test_no_feasible_solution(self):
+        function_coefficients = [-5, 2]
+        matrix_A = [[1, -1],
+                    [1, -2],
+                    [2, -1]]
+        vector_B = [2, 0, 1]
+        problem_type = "min"
+        non_negative_constraints = [True, False]
+        signs_vector = ["ge", "ge", "le"]
+        with self.assertRaises(SMLP.NoFeasibleSolutionError):
+            solution = SMLP.simplex_method(function_coefficients,
+                matrix_A, vector_B, problem_type, signs_vector,
+                non_negative_constraints)
 
 if __name__ == '__main__':
     unittest.main()
