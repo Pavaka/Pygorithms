@@ -65,10 +65,5 @@ def change_making_problem_DP(coin_denominations, money_amount):
             optimal_solution.append(coin_denominations[i])
     # return optimal_number_coins
 
-
-def _check_input_data(coin_denominations, money_amount):
-    pass
-
-
 class NoFeasibleSolutionError(Exception):
     pass
