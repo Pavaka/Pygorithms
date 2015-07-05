@@ -34,7 +34,8 @@ class TestSmallerFunctions(unittest.TestCase):
     def test_all_variables_non_negative(self):
         function_coefficients, matrix_A =\
             CF._all_variables_non_negative(
-                self.function_coefficients, self.matrix_A, self.non_negative_constraints)
+                self.function_coefficients,
+                self.matrix_A, self.non_negative_constraints)
 
         self.assertEqual(
             function_coefficients, [5, -5, 7, -13, 13, 18, -26, 26])
@@ -42,7 +43,6 @@ class TestSmallerFunctions(unittest.TestCase):
         self.assertEqual(matrix_A, [[3, -3, 5, 0, 0, -16, 0, 0],
                                     [-6, 6, 0, -1, 1, 1, -1, 1],
                                     [5, -5, 0, -7, 7, 1, -1, 1]])
-
 
     def test_make_RHS_non_negative(self):
 
@@ -57,24 +57,38 @@ class TestSmallerFunctions(unittest.TestCase):
         self.assertEqual(signs_vector, ["le", "eq", "le"])
 
     def test_make_all_constraints_equations(self):
-        function_coefficients, matrix_A, signs_vector = CF._make_all_constraints_equations(self.function_coefficients, self.matrix_A, self.signs_vector)
+        function_coefficients, matrix_A, signs_vector =\
+            CF._make_all_constraints_equations(
+                self.function_coefficients, self.matrix_A, self.signs_vector)
+
         self.assertEqual(function_coefficients, [5, 7, -13, 18, -26, 0, 0])
         self.assertEqual(matrix_A, [[3, 5, 0, -16, 0, 1, 0],
                                     [-6, 0, -1, 1, -1, 0, 0],
                                     [5, 0, -7, 1, -1, 0, -1]])
 
     def test_rows_need_artificial_variable(self):
-        rows_need_artificial_variable = CF._rows_need_artificial_variable(self.function_coefficients, self.matrix_A)
+        rows_need_artificial_variable =\
+            CF._rows_need_artificial_variable(
+                self.function_coefficients, self.matrix_A)
+
         self.assertEqual(rows_need_artificial_variable, [1, 2])
+
         self.matrix_A[0][1] = 0
-        rows_need_artificial_variable = CF._rows_need_artificial_variable(self.function_coefficients, self.matrix_A)
+        rows_need_artificial_variable = CF._rows_need_artificial_variable(
+            self.function_coefficients, self.matrix_A)
+
         self.assertEqual(rows_need_artificial_variable, [0, 1, 2])
 
     def test_convert_to_big_M_form(self):
-        function_coefficients, matrix_A = CF._convert_to_big_M_form(self.function_coefficients, self.matrix_A)
-        self.assertEqual(function_coefficients, [5, 7, -13, 18, -26, CF.big_M, CF.big_M])
+        function_coefficients, matrix_A = CF._convert_to_big_M_form(
+            self.function_coefficients, self.matrix_A)
+
+        self.assertEqual(
+            function_coefficients, [5, 7, -13, 18, -26, CF.big_M, CF.big_M])
+
         self.assertEqual(matrix_A, [[3, 5, 0, -16, 0, 0, 0],
                                     [-6, 0, -1, 1, -1, 1, 0],
                                     [5, 0, -7, 1, -1, 0, 1]])
+
 if __name__ == '__main__':
     unittest.main()

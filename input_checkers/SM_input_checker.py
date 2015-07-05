@@ -1,6 +1,7 @@
 problem_types = ("min", "max")
 signs = ("le", "eq", "ge")
 
+
 def check_input_data(function_coefficients, matrix_A, vector_B,
                      problem_type, signs_vector, non_negative_constraints):
 

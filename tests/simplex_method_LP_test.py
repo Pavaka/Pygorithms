@@ -35,7 +35,8 @@ class TestSmallerFunctions(unittest.TestCase):
         self.assertEqual(C_slash, [-294, -294, 0, 0, 100, 0, -406])
 
     def test_get_optimal_solution(self):
-        optimal_solution = SMLP._get_optimal_solution(self.simplex_table, "min",[True] * 6, ["eq"] * 2)
+        optimal_solution = SMLP._get_optimal_solution(
+            self.simplex_table, "min", [True] * 6, ["eq"] * 2)
         self.assertEqual(optimal_solution[0], 406)
         self.assertEqual(optimal_solution[1], [0, 0, 0, 6, 0, 4])
 
@@ -86,7 +87,7 @@ class TestSimplexMethodSteps(unittest.TestCase):
 
     def test_calc_C_slash(self):
 
-        C_slash = [6- 3*self.m, 6 -3*self.m, 0, 0, self.m, 0, -6 - 4*self.m]
+        C_slash = [6 - 3*self.m, 6 - 3*self.m, 0, 0, self.m, 0, -6 - 4*self.m]
         self.assertEqual(self.simplex_table.C_slash, C_slash)
 
     def test_key_element(self):
@@ -134,8 +135,9 @@ class TestSimplexMethodTestExamples(unittest.TestCase):
         signs_vector = ["le", "le"]
         non_negative_constraints = [False, True]
         solution = SMLP.simplex_method(function_coefficients,
-            matrix_A, vector_B, problem_type, signs_vector,
-            non_negative_constraints)
+                                       matrix_A, vector_B,
+                                       problem_type, signs_vector,
+                                       non_negative_constraints)
         self.assertEqual(solution[0], -1)
         self.assertEqual(solution[1], [-1, 0])
 
@@ -149,9 +151,9 @@ class TestSimplexMethodTestExamples(unittest.TestCase):
         non_negative_constraints = [True, True]
         signs_vector = ["ge", "le", "ge"]
         with self.assertRaises(SMLP.NoOptimalSolutionError):
-            solution = SMLP.simplex_method(function_coefficients,
-                matrix_A, vector_B, problem_type, signs_vector,
-                non_negative_constraints)
+            SMLP.simplex_method(function_coefficients,
+                                matrix_A, vector_B, problem_type, signs_vector,
+                                non_negative_constraints)
 
     def test_no_feasible_solution(self):
         function_coefficients = [-5, 2]
@@ -163,9 +165,9 @@ class TestSimplexMethodTestExamples(unittest.TestCase):
         non_negative_constraints = [True, False]
         signs_vector = ["ge", "ge", "le"]
         with self.assertRaises(SMLP.NoFeasibleSolutionError):
-            solution = SMLP.simplex_method(function_coefficients,
-                matrix_A, vector_B, problem_type, signs_vector,
-                non_negative_constraints)
+            SMLP.simplex_method(function_coefficients,
+                                matrix_A, vector_B, problem_type, signs_vector,
+                                non_negative_constraints)
 
 if __name__ == '__main__':
     unittest.main()

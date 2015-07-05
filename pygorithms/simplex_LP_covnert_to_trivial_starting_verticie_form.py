@@ -12,6 +12,13 @@ def simplex_LP_covnert_to_trivial_starting_verticie_form(
     function_coefficients, matrix_A,
         vector_B, problem_type, signs_vector,
         non_negative_constraints):
+    """
+    Function that takes the same type and number of arguments
+    like simlex_method_LP (for more info check help(simlex_method_LP))
+    The function returns a modified function_coefficients, matrix_A and
+    vector_B so that they are in form with trivial verticie so the simlpex
+    method can make a simlpex table and start iterating.
+    """
 
     check_input_data(function_coefficients, matrix_A, vector_B,
                      problem_type, signs_vector, non_negative_constraints)
@@ -40,7 +47,8 @@ def simplex_LP_covnert_to_trivial_starting_verticie_form(
     return function_coefficients, matrix_A, vector_B
 
 
-def _add_new_variable_for_non_negativity(index, function_coefficients, matrix_A):
+def _add_new_variable_for_non_negativity(
+        index, function_coefficients, matrix_A):
     function_coefficients.insert(index + 1, -function_coefficients[index])
 
     for i, row in enumerate(iter(matrix_A)):
@@ -55,7 +63,7 @@ def _negate_vector(vector):
 
 def _all_variables_non_negative(
         function_coefficients, matrix_A, non_negative_constraints):
-    
+
     offset = 0
     for index, variable in enumerate(iter(non_negative_constraints)):
         if variable is False:
@@ -83,7 +91,8 @@ def _make_RHS_non_negative(matrix_A, signs_vector, vector_B):
     return matrix_A, signs_vector, vector_B
 
 
-def _make_all_constraints_equations(function_coefficients, matrix_A, signs_vector):
+def _make_all_constraints_equations(
+        function_coefficients, matrix_A, signs_vector):
     # print(function_coefficients,matrix_A, signs_vector)
 
     for index, sign in enumerate(iter(signs_vector)):
@@ -134,8 +143,8 @@ def _rows_need_artificial_variable(function_coefficients, matrix_A):
                 row_of_positive_value = index
             elif value == 0:
                 continue
-        if found_single_positive_value and\
-            row_of_positive_value in rows_need_artificial_variable:
-                rows_need_artificial_variable.remove(row_of_positive_value)
+        if found_single_positive_value and(
+                row_of_positive_value in rows_need_artificial_variable):
+                    rows_need_artificial_variable.remove(row_of_positive_value)
 
     return rows_need_artificial_variable

@@ -5,7 +5,18 @@ from input_checkers.CMP_input_checker import check_input_data
 
 
 def change_making_problem_DP(coin_denominations, money_amount):
-
+    """
+    Function that solves the change making problem using a dynamic programming
+    approach. The function  takes two arguments, a list or tuple of positive
+    integers, and a positive integer. It returns a list that contains
+    the coins that must be returned.
+    Each coint that must be returned is represented by its denomination.
+    Example:
+    change_making_problem_greedy_algorithm([1, 2, 7], 12)
+    will return a list [7, 2, 2, 1]
+    This means that you will return 4 coins with the respective
+    denominations.
+    """
     check_input_data(coin_denominations, money_amount)
 
     coin_denominations = sorted(coin_denominations)
@@ -63,7 +74,7 @@ def change_making_problem_DP(coin_denominations, money_amount):
         else:
             j -= coin_denominations[i]
             optimal_solution.append(coin_denominations[i])
-    # return optimal_number_coins
+
 
 class NoFeasibleSolutionError(Exception):
     pass

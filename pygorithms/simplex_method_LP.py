@@ -37,14 +37,14 @@ def simplex_method(function_coefficients, matrix_A,
     of every variable of the problem
     matrix_A which is a list which contains list that consist of numbers
     every list in matrix_A represents a constraint and every constraint is
-    a list of numbers that are the coefficients of the variables in each 
+    a list of numbers that are the coefficients of the variables in each
     constraint
-    vector_B is a list that represents the RHS of each constraint 
+    vector_B is a list that represents the RHS of each constraint
     every number in the list corresponds to a constraint RHS
     problem_type is a keyword argument that takses a string
-    which specifies the type of problem either a "min" or 
+    which specifies the type of problem either a "min" or
     "max" problem by default the value is "min"
-    signs_vector is a list that consists of strings which 
+    signs_vector is a list that consists of strings which
     represent each constraint signs possible options are
     greater than or equal which is the string "ge"
     less that or equal which is the string "le"
@@ -54,7 +54,7 @@ def simplex_method(function_coefficients, matrix_A,
     non_negative_constraints is a list that consists of booleans
     each boolean corresponds to a variable if it is True
     then there is a non negativity constraint for the variable
-    by default all avariables are non negative thus the list 
+    by default all avariables are non negative thus the list
     is filled with values True
 
     Example usage:
@@ -208,9 +208,6 @@ def _calculate_optimal_vertex(
     if non_zero_artificial_variables_values != []:
         raise NoFeasibleSolutionError
 
-    # if additional_artificial_variables_count > 0:
-    #     optimal_vertex = optimal_vertex[:-additional_artificial_variables_count]
-
     optimal_vertex = optimal_vertex[:-additional_artificial_variables_count]\
         or optimal_vertex
 
@@ -258,17 +255,23 @@ def _find_key_element(simplex_table):
     for i in range(len(simplex_table.Xb)):
         j = lowest_value_index
         if simplex_table.core_table[i][j] > 0:
-            key_elemenent_candidates.append([simplex_table.core_table[i][j], i])
+            key_elemenent_candidates.append(
+                [simplex_table.core_table[i][j], i])
 
     for element in key_elemenent_candidates:
         element[0] = simplex_table.B_slash[element[1]] / element[0]
 
-    key_element_index = min(key_elemenent_candidates, key = lambda x: x[0])[1]
-    key_element = simplex_table.core_table[lowest_value_index][key_element_index]
+    key_element_index = min(
+        key_elemenent_candidates, key=lambda x: x[0])[1]
+
+    key_element = simplex_table.core_table[
+        lowest_value_index][key_element_index]
     out_of_basis_X = simplex_table.Xb[key_element_index]
     going_in_basis_X = lowest_value_index
 
-    return key_element, [out_of_basis_X, going_in_basis_X], (key_element_index, lowest_value_index)
+    return key_element, [out_of_basis_X, going_in_basis_X], (
+        key_element_index, lowest_value_index)
+
 
 def _new_simplex_table_Xb(Xb, basis_rotation):
     index = Xb.index(basis_rotation[0])
@@ -292,15 +295,21 @@ def _new_simplex_table(simplex_table):
     for k in range(len(simplex_table.B_slash)):
         for v in range(len(simplex_table.function_coefficients)):
             if k == key_i:
-                new_core_table[k][v] = simplex_table.core_table[k][v]/key_element
+                new_core_table[k][v] =\
+                    simplex_table.core_table[k][v]/key_element
             else:
-                new_core_table[k][v] = simplex_table.core_table[k][v] - (simplex_table.core_table[key_i][v]*simplex_table.core_table[k][key_j])/key_element
+                new_core_table[k][v] =\
+                    simplex_table.core_table[k][v] - (
+                        simplex_table.core_table[key_i][
+                            v]*simplex_table.core_table[k][key_j])/key_element
 
     for k in range(len(simplex_table.B_slash)):
         if k == key_i:
             new_B_slash[k] = simplex_table.B_slash[k]/key_element
         else:
-            new_B_slash[k] = simplex_table.B_slash[k] - simplex_table.B_slash[key_i]*simplex_table.core_table[k][key_j]/key_element
+            new_B_slash[k] = simplex_table.B_slash[k]\
+                - simplex_table.B_slash[key_i]*simplex_table.core_table[
+                    k][key_j]/key_element
 
     new_simplex_table.core_table = new_core_table
     new_simplex_table.B_slash = new_B_slash
@@ -308,9 +317,9 @@ def _new_simplex_table(simplex_table):
     return new_simplex_table
 
 
-
 class NoOptimalSolutionError(Exception):
     pass
+
 
 class NoFeasibleSolutionError(Exception):
     pass

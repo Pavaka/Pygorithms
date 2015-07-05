@@ -155,7 +155,5 @@ class TestFirstTrnspTableFinder(unittest.TestCase):
                 self.assertEqual(
                     first_transp_table[i][j].amount, amounts[i][j])
 
-
-
 if __name__ == '__main__':
     unittest.main()

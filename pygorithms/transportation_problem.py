@@ -51,14 +51,14 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     transportation_table = find_first_transportation_table(
         empty_transportation_table, vector_a, vector_b)
 
-    transportation_table, found_optimal_solution = find_optimal_solution(transportation_table)
+    transportation_table, found_optimal_solution =\
+        find_optimal_solution(transportation_table)
 
     while not found_optimal_solution:
-        transportation_table, found_optimal_solution = find_optimal_solution(transportation_table)
+        transportation_table, found_optimal_solution =\
+            find_optimal_solution(transportation_table)
 
     # return otgovora po nqkakuv nachin
-
-
 
 
 def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
