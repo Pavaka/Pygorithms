@@ -141,10 +141,11 @@ def find_optimal_solution(transportation_table):
 
         table_graph_cells_coords = find_table_graph_cells(
             transportation_table, i, j)
-        is_positive_cell = calculate_cell_value(
+        is_positive_cell = cell_value_is_positive(
             transportation_table, table_graph_cells_coords)
         if not is_positive_cell:
-            new_transportation_table = calculate_new_transportation_table()
+            new_transportation_table = calculate_new_transportation_table(
+                transportation_table, table_graph_cells_coords)
             return new_transportation_table, False
 
         if j < table_columns - 1:
@@ -299,15 +300,47 @@ def find_all_reachable_not_None_cells(
     return cells_coords
 
 
-def calculate_cell_value(transportation_table, table_graph_cells_coords):
-    # for cell_coords in table_graph_cells_coords:
-        # pass
+def cell_value_is_positive(transportation_table, table_graph_cells_coords):
 
-    return bool
+    plus_sign_cells = table_graph_cells_coords[::2]
+    negative_sign_cells = table_graph_cells_coords[1::2]
+    positive_sum = sum(map(lambda index: transportation_table[
+        index[0]][index[1]].cost, plus_sign_cells))
+    negative_sum = sum(map(lambda index: transportation_table[
+        index[0]][index[1]].cost, negative_sign_cells))
+
+    if positive_sum < negative_sum:
+        return False
+    else:
+        return True
 
 
-def calculate_new_transportation_table(transportation_table):
-    return
+def calculate_new_transportation_table(
+        transportation_table, table_graph_cells_coords):
+    plus_sign_cells = table_graph_cells_coords[::2]
+    negative_sign_cells = table_graph_cells_coords[1::2]
+    theta = min(map(lambda index: transportation_table[
+        index[0]][index[1]].amount, negative_sign_cells))
+    for cell_index in plus_sign_cells:
+        i = cell_index[0]
+        j = cell_index[1]
+        if transportation_table[i][j].amount is not None:
+            transportation_table[i][j].amount += theta
+        else:
+            transportation_table[i][j].amount = theta
+
+    for cell_index in negative_sign_cells:
+        i = cell_index[0]
+        j = cell_index[1]
+        transportation_table[i][j].amount -= theta
+
+    for cell_index in negative_sign_cells:
+        i = cell_index[0]
+        j = cell_index[1]
+        if transportation_table[i][j].amount == 0:
+            transportation_table[i][j].amount = None
+            break
+    return transportation_table
 
 
 class VectorSizesError(Exception):

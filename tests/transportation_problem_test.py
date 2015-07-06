@@ -226,12 +226,29 @@ class TestSuppFunctions(unittest.TestCase):
                     cell.amount = None
                 counter += 1
 
-        # for row in self.transp_table:
-        #     for cell in row:
-        #         print(cell.amount)
         graph_path_cells = find_table_graph_cells(self.transp_table, 1, 3)
         self.assertEqual(graph_path_cells, [
             (1, 3), (1, 0), (0, 0), (0, 1), (2, 1), (2, 3)])
+
+    def test_cell_value_is_positive(self):
+        table_graph_cells_coords = find_table_graph_cells(
+            self.transp_table, 0, 1)
+        cell_value = cell_value_is_positive(
+            self.transp_table, table_graph_cells_coords)
+        self.assertEqual(cell_value, False)
+
+    def test_calc_new_transportation_table(self):
+        table_graph_cells = find_table_graph_cells(self.transp_table, 0, 1)
+        new_transport_table = calculate_new_transportation_table(
+            self.transp_table, table_graph_cells)
+        expexted_amount = [[20, 80, None, None],
+                           [130, None, None, None],
+                           [None, 40, 80, 50]]
+
+        for i in range(len(self.transp_table)):
+            for j in range(len(self.transp_table[0])):
+                self.assertEqual(
+                    new_transport_table[i][j].amount, expexted_amount[i][j])
 
 if __name__ == '__main__':
     unittest.main()
