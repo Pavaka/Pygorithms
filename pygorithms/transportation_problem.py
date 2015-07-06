@@ -51,13 +51,35 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     transportation_table = find_first_transportation_table_amounts(
         empty_transportation_table, vector_a, vector_b)
 
+
     transportation_table, found_optimal_solution =\
         find_optimal_solution(transportation_table)
     while not found_optimal_solution:
         transportation_table, found_optimal_solution =\
             find_optimal_solution(transportation_table)
 
-    # return nesgto ot transportation_table
+    optimal_variables_vector = get_optimal_solution_vector(
+        transportation_table, balancing_flag)
+
+    return optimal_variables_vector
+
+
+def get_optimal_solution_vector(transportation_table, balancing_flag):
+    if balancing_flag == balancing_flags[2]:
+        for row in transportation_table:
+            row.pop(-1)
+    elif balancing_flag == balancing_flags[1]:
+        transportation_table.pop(-1)
+
+    optimal_variables_vector = []
+    for row in transportation_table:
+        for variable in row:
+            if variable.amount is not None:
+                optimal_variables_vector.append(variable.amount)
+            else:
+                optimal_variables_vector.append(0)
+
+    return optimal_variables_vector
 
 
 def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
@@ -111,7 +133,8 @@ def find_first_transportation_table_amounts(
         transportation_table, vector_a, vector_b):
     i = 0
     j = 0
-    last_transportation_table_cell = transportation_table[-1][-1]
+    table_rows = len(transportation_table)
+    table_columns = len(transportation_table[0])
     while True:
         Ai = vector_a[i]
         Bi = vector_b[j]
@@ -119,8 +142,7 @@ def find_first_transportation_table_amounts(
         transportation_table[i][j].amount = theta
         vector_a[i] -= theta
         vector_b[j] -= theta
-
-        if transportation_table[i][j] is last_transportation_table_cell:
+        if (i, j) == (table_rows-1, table_columns-1):
             return transportation_table
 
         if vector_a[i] == 0:

@@ -250,5 +250,27 @@ class TestSuppFunctions(unittest.TestCase):
                 self.assertEqual(
                     new_transport_table[i][j].amount, expexted_amount[i][j])
 
+    def test_transportation_problem(self):
+        self.costs = [3, 5, 7, 11,
+                      1, 4, 6, 3,
+                      5, 8, 12, 7]
+        self.vector_a = [100, 130, 170]
+        self.vector_b = [150, 120, 80, 50]
+        optimal_vector = transportation_problem(
+            self.costs, self.vector_a, self.vector_b)
+        expected_answer = [0, 20, 80, 0,
+                           130, 0, 0, 0,
+                           20, 100, 0, 50]
+        self.assertEqual(optimal_vector, expected_answer)
+
+    def test_tranportation_problem_additional_row(self):
+        self.costs = [1, 2, 4, 3, 4, 3]
+        self.vector_a = [30, 25]
+        self.vector_b = [45, 10, 15]
+        optimal_vector = transportation_problem(
+            self.costs, self.vector_a, self.vector_b)
+        expected_answer = [30, 0, 0, 15, 0, 10]
+        self.assertEqual(optimal_vector, expected_answer)
+
 if __name__ == '__main__':
     unittest.main()
