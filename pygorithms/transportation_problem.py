@@ -5,7 +5,7 @@ from input_checkers.TP_input_checker import check_input_data
 
 balancing_flags = ("balanced", "additional row", "additional column")
 no_next_None_cell = ("No next None cell", "No next None cell")
-
+direction_not_to_go = ("left", "right", "up", "down", "go to all directions")
 
 class TransportationCell:
 
@@ -32,7 +32,7 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     B1 = x11 + x21 ... xi1
     Bj = x1j + x2j ... xij
 
-    The function solves the minimum cost transportation transportation.
+    The function solves the minimum cost transportation problem.
     For the passed vectors to be compitible
     vector_a * vector_b  must be equal to the size of vector costs
     The function returns A DE ?
@@ -47,18 +47,17 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
 
     costs = convert_costs_to_two_dimensional(costs, table_rows, table_columns)
     empty_transportation_table, balancing_flag, vector_a, vector_b\
-        = create_transportation_table(costs, vector_a, vector_b)
-    transportation_table = find_first_transportation_table(
+        = create_balanced_transportation_table(costs, vector_a, vector_b)
+    transportation_table = find_first_transportation_table_amounts(
         empty_transportation_table, vector_a, vector_b)
 
     transportation_table, found_optimal_solution =\
         find_optimal_solution(transportation_table)
-
     while not found_optimal_solution:
         transportation_table, found_optimal_solution =\
             find_optimal_solution(transportation_table)
 
-    # return otgovora po nqkakuv nachin
+    # return nesgto ot transportation_table
 
 
 def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
@@ -71,7 +70,7 @@ def convert_costs_to_two_dimensional(costs, table_rows, table_columns):
     return costs_two_dimensional
 
 
-def create_transportation_table(costs, vector_a, vector_b):
+def create_balanced_transportation_table(costs, vector_a, vector_b):
 
     sum_vecotr_a = sum(vector_a)
     sum_vecotr_b = sum(vector_b)
@@ -108,7 +107,8 @@ def create_transportation_table(costs, vector_a, vector_b):
     return transportation_table, balancing_flag, vector_a, vector_b
 
 
-def find_first_transportation_table(transportation_table, vector_a, vector_b):
+def find_first_transportation_table_amounts(
+        transportation_table, vector_a, vector_b):
     i = 0
     j = 0
     last_transportation_table_cell = transportation_table[-1][-1]
@@ -132,24 +132,29 @@ def find_first_transportation_table(transportation_table, vector_a, vector_b):
 def find_optimal_solution(transportation_table):
     i = 0
     j = 0
-
+    table_rows = len(transportation_table)
+    table_columns = len(transportation_table[0])
     while True:
-        i, j = find_next_not_None_cell(transportation_table, i, j)
+        i, j = find_next_None_cell(transportation_table, i, j)
         if (i, j) == no_next_None_cell:
             return transportation_table, True
-        elif i < len(transportation_table) - 1:
-            i += 1
-        elif j < len(transportation_table[0]) - 1:
-            j += 1
 
-        table_graph_cells = find_cells_graph(transportation_table, i, j)
-        is_positive_cell = calculate_cell_value(table_graph_cells)
+        table_graph_cells_coords = find_table_graph_cells(
+            transportation_table, i, j)
+        is_positive_cell = calculate_cell_value(
+            transportation_table, table_graph_cells_coords)
         if not is_positive_cell:
-            new_transportation_table = calculate_new_TT()
+            new_transportation_table = calculate_new_transportation_table()
             return new_transportation_table, False
 
+        if j < table_columns - 1:
+            j += 1
+        elif i < table_rows - 1:
+            i += 1
+            j = 0
 
-def find_next_not_None_cell(transportation_table, i, j):
+
+def find_next_None_cell(transportation_table, i, j):
     table_rows = len(transportation_table)
     table_columns = len(transportation_table[0])
     while True:
@@ -167,18 +172,141 @@ def find_next_not_None_cell(transportation_table, i, j):
             return i, j
 
 
-def find_cells_graph(transportation_table, i, j):
-    graph_cells_coords = []
-    graph_cells_coords.append((i, j))
+def find_table_graph_cells(transportation_table, i, j):
+    current_possible_paths = [[(i, j)]]
+    None_cell_coords = i, j
+    while True:
+        current_possible_paths_copy = current_possible_paths[:]
+        for path in current_possible_paths_copy:
+            if path[0] == path[-1] and len(current_possible_paths_copy) > 1:
+                return path[:-1]
+            forbidden_direction = find_forbidden_direction(path)
+            extensible_cells = find_all_reachable_not_None_cells(
+                transportation_table, path[-1], forbidden_direction,
+                None_cell_coords)
+            new_paths = extend_path_for_each_reachable_not_None_cell(
+                path, extensible_cells)
+            current_possible_paths.remove(path)
+            current_possible_paths.extend(new_paths)
 
-    return []
+
+def find_forbidden_direction(path):
+    if len(path) == 1:
+        return direction_not_to_go[4]
+    last_node = path[-1]
+    before_last_node = path[-2]
+
+    if last_node[0] > before_last_node[0]:
+        return direction_not_to_go[2]
+
+    elif last_node[0] < before_last_node[0]:
+        return direction_not_to_go[3]
+
+    elif last_node[1] > before_last_node[1]:
+        return direction_not_to_go[0]
+
+    elif last_node[1] < before_last_node[1]:
+        return direction_not_to_go[1]
 
 
-def calculate_cell_value(table_graph_cells):
+def extend_path_for_each_reachable_not_None_cell(
+        current_path, extensible_cells):
+    all_new_paths = []
+    for cell_coords in extensible_cells:
+        current_path_copy = current_path[:]
+        current_path_copy.append(cell_coords)
+        all_new_paths.append(current_path_copy)
+
+    return all_new_paths
+
+
+def find_lefter_not_None_cells(
+        transportation_table, coords, None_cell_coords):
+    cells_coords = []
+    i = coords[0]
+    j = coords[1]
+    while True:
+        if j == 0:
+            return cells_coords
+        j -= 1
+        if transportation_table[i][j].amount is not\
+                None or (i, j) == None_cell_coords:
+            cells_coords.append((i, j))
+
+
+def find_righter_not_None_cells(
+        transportation_table, coords, None_cell_coords):
+    cells_coords = []
+    i = coords[0]
+    j = coords[1]
+    table_columns = len(transportation_table[0])
+    while True:
+        if j == table_columns-1:
+            return cells_coords
+        j += 1
+        if transportation_table[i][j].amount is not\
+                None or (i, j) == None_cell_coords:
+            cells_coords.append((i, j))
+
+
+def find_upper_not_None_cells(
+        transportation_table, coords, None_cell_coords):
+    cells_coords = []
+    i = coords[0]
+    j = coords[1]
+    while True:
+        if i == 0:
+            return cells_coords
+        i -= 1
+        if transportation_table[i][j].amount is not\
+                None or (i, j) == None_cell_coords:
+            cells_coords.append((i, j))
+
+
+def find_downer_not_None_cells(
+        transportation_table, coords, None_cell_coords):
+    cells_coords = []
+    i = coords[0]
+    j = coords[1]
+    table_rows = len(transportation_table)
+    while True:
+        if i == table_rows-1:
+            return cells_coords
+        i += 1
+        if transportation_table[i][j].amount is not\
+                None or (i, j) == None_cell_coords:
+            cells_coords.append((i, j))
+
+
+def find_all_reachable_not_None_cells(
+        transportation_table, coords, forbidden_direction, None_cell_coords):
+    cells_coords = []
+    lefter_cells = find_lefter_not_None_cells(
+        transportation_table, coords, None_cell_coords)
+    righter_cells = find_righter_not_None_cells(
+        transportation_table, coords, None_cell_coords)
+    upper_cells = find_upper_not_None_cells(
+        transportation_table, coords, None_cell_coords)
+    downer_cells = find_downer_not_None_cells(
+        transportation_table, coords, None_cell_coords)
+
+    all_cells = [lefter_cells, righter_cells, upper_cells, downer_cells, []]
+    index_to_remove = direction_not_to_go.index(forbidden_direction)
+    all_cells.pop(index_to_remove)
+    for cells in all_cells:
+        cells_coords.extend(cells)
+
+    return cells_coords
+
+
+def calculate_cell_value(transportation_table, table_graph_cells_coords):
+    # for cell_coords in table_graph_cells_coords:
+        # pass
+
     return bool
 
 
-def calculate_new_TT(transportation_table):
+def calculate_new_transportation_table(transportation_table):
     return
 
 
