@@ -45,30 +45,30 @@ class TestCreationTransportationTable(unittest.TestCase):
 
     def test_create_balanced_transportation_table_balancig_flag(self):
 
-        balncing_flag = create_balanced_transportation_table(self.costs, self.vector_a,
-                                                    self.vector_b)[1]
+        balncing_flag = create_balanced_transportation_table(
+            self.costs, self.vector_a, self.vector_b)[1]
         self.assertEqual(balncing_flag, balancing_flags[0])
         self.vector_a[1] += 10
-        balncing_flag = create_balanced_transportation_table(self.costs, self.vector_a,
-                                                    self.vector_b)[1]
+        balncing_flag = create_balanced_transportation_table(
+            self.costs, self.vector_a, self.vector_b)[1]
         self.assertEqual(balncing_flag, balancing_flags[2])
         self.vector_b[2] += 30
-        balncing_flag = create_balanced_transportation_table(self.costs, self.vector_a,
-                                                    self.vector_b)[1]
+        balncing_flag = create_balanced_transportation_table(
+            self.costs, self.vector_a, self.vector_b)[1]
         self.assertEqual(balncing_flag, balancing_flags[1])
 
     def test_create_balanced_transportation_table_vector_a(self):
         self.vector_a = [100, 130, 210]
-        result = create_balanced_transportation_table(self.costs, self.vector_a,
-                                             self.vector_b)
+        result = create_balanced_transportation_table(
+            self.costs, self.vector_a, self.vector_b)
         result_vector_a, result_vector_b = result[2], result[3]
         self.assertEqual(result_vector_a, self.vector_a)
         self.assertEqual([150, 120, 80, 50, 40], result_vector_b)
 
     def test_create_balanced_transportation_table_vector_b(self):
         self.vector_b = [150, 120, 80, 100]
-        result = create_balanced_transportation_table(self.costs, self.vector_a,
-                                             self.vector_b)
+        result = create_balanced_transportation_table(
+            self.costs, self.vector_a, self.vector_b)
         result_vector_a, result_vector_b = result[2], result[3]
         self.assertEqual(result_vector_b, self.vector_b)
         self.assertEqual([100, 130, 170, 50], result_vector_a)
@@ -121,7 +121,8 @@ class TestFirstTrnspTableFinder(unittest.TestCase):
                  [9, 10, 11, 12]]
         vector_a = [100, 130, 170]
         vector_b = [150, 120, 80, 50]
-        new_table = create_balanced_transportation_table(costs, vector_a, vector_b)[0]
+        new_table = create_balanced_transportation_table(
+            costs, vector_a, vector_b)[0]
         first_transp_table = find_first_transportation_table_amounts(
             new_table, vector_a, vector_b)
 
@@ -146,7 +147,8 @@ class TestFirstTrnspTableFinder(unittest.TestCase):
                    [50, 80, None, None, None],
                    [None, 40, 80, 50, 30]]
 
-        new_table = create_balanced_transportation_table(costs, vector_a, vector_b)[0]
+        new_table = create_balanced_transportation_table(
+            costs, vector_a, vector_b)[0]
         first_transp_table = find_first_transportation_table_amounts(
             new_table, vector_a, vector_b)
 
@@ -154,6 +156,7 @@ class TestFirstTrnspTableFinder(unittest.TestCase):
             for j in range(len(vector_b)):
                 self.assertEqual(
                     first_transp_table[i][j].amount, amounts[i][j])
+
 
 class TestSuppFunctions(unittest.TestCase):
 
@@ -256,21 +259,34 @@ class TestSuppFunctions(unittest.TestCase):
                       5, 8, 12, 7]
         self.vector_a = [100, 130, 170]
         self.vector_b = [150, 120, 80, 50]
-        optimal_vector = transportation_problem(
+        optimal_value, optimal_vector = transportation_problem(
             self.costs, self.vector_a, self.vector_b)
+
         expected_answer = [0, 20, 80, 0,
                            130, 0, 0, 0,
                            20, 100, 0, 50]
         self.assertEqual(optimal_vector, expected_answer)
+        self.assertEqual(optimal_value, 2040)
 
     def test_tranportation_problem_additional_row(self):
         self.costs = [1, 2, 4, 3, 4, 3]
         self.vector_a = [30, 25]
         self.vector_b = [45, 10, 15]
-        optimal_vector = transportation_problem(
+        optimal_value, optimal_vector = transportation_problem(
             self.costs, self.vector_a, self.vector_b)
         expected_answer = [30, 0, 0, 15, 0, 10]
         self.assertEqual(optimal_vector, expected_answer)
+        self.assertEqual(optimal_value, 105)
+
+    def test_vector_sizes_error(self):
+        self.costs = [1, 2, 4, 3, 4, 3, 11]
+        self.vector_a = [30, 25]
+        self.vector_b = [45, 10, 15]
+
+        with self.assertRaises(VectorSizesError):
+            transportation_problem(
+                self.costs, self.vector_a, self.vector_b)
+
 
 if __name__ == '__main__':
     unittest.main()

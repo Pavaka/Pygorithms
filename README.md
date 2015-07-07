@@ -17,6 +17,6 @@ Optimization algorithms:
 - Change making problem solved with dynamic programming approach
 - Change making problem solved with greedy algorithm approach 
 - Simplex method for solving minimization problem with trivial starting vertecie 
-- Transportation problem solved with transportation table (Currently not working)
+- Transportation problem solved with transportation table
 - Algorithm for converting a linear optimization problem
   into canonical form or in Big M method form.

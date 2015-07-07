@@ -44,15 +44,12 @@ def check_input_data(function_coefficients, matrix_A, vector_B,
         if not isinstance(constraint, bool):
             raise NonNegativeConstraintValueError
 
-
     variables_count = set()
     variables_count.add(len(function_coefficients))
     for row in matrix_A:
         variables_count.add(len(row))
     variables_count.add(len(non_negative_constraints))
     _check_incompitable_size(variables_count)
-    # if len(variables_count) > 1:
-    #     raise IncompitableVectorSizesError
 
     constraints_count = set()
     constraints_count.add(len(matrix_A))
@@ -61,11 +58,10 @@ def check_input_data(function_coefficients, matrix_A, vector_B,
     _check_incompitable_size(constraints_count)
 
 
-
-
 def _check_incompitable_size(item):
     if len(item) > 1:
         raise IncompitableVectorSizesError
+
 
 def _is_list(item):
     if item == []:
@@ -135,11 +131,3 @@ class SignsVectorValueError(Exception):
 
 class NonNegativeConstraintValueError(Exception):
     pass
-
-
-# __all__ = ["check_input_data"]
-# # ,
-# # 'FuncCoefTypeError', 'FuncCoefValueError', 'IncompitableVectorSizesError', 'MatrixATypeError', 
-# # 'MatrixAValueError', 'NonNegativeConstraintTypeError', 'NonNegativeConstraintValueError', 
-# # 'ProblemTypeValueError', 'SignsVectorTypeError', 'SignsVectorValueError', 'VectorBTypeError',
-# #  'VectorBValueError']

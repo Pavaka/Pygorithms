@@ -43,5 +43,6 @@ class TestTPInputChecker(unittest.TestCase):
         with self.assertRaises(NegativeValueError):
             check_input_data(self.costs, self.vector_a, self.vector_b)
 
+
 if __name__ == '__main__':
     unittest.main()

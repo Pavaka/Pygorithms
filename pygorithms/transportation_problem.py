@@ -7,6 +7,7 @@ balancing_flags = ("balanced", "additional row", "additional column")
 no_next_None_cell = ("No next None cell", "No next None cell")
 direction_not_to_go = ("left", "right", "up", "down", "go to all directions")
 
+
 class TransportationCell:
 
     def __init__(self, cost):
@@ -14,9 +15,9 @@ class TransportationCell:
         self.amount = None
 
 
-def transportation_problem(costs=None, vector_a=None, vector_b=None):
+def transportation_problem(costs, vector_a, vector_b):
     """
-    Function takes 3 arguments : (costs=None,vector_a=None, vector_b=None)
+    Function takes 3 arguments : (costs, vector_a, vector_b)
 
     keyword argument costs : a list of costs [c11, c12, .. ,cij]
     where c11 is the transportation cost between A1 and B1
@@ -35,7 +36,10 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     The function solves the minimum cost transportation problem.
     For the passed vectors to be compitible
     vector_a * vector_b  must be equal to the size of vector costs
-    The function returns A DE ?
+    The function returns a tuple of two elements the first one
+    is the optimal value of the given problem and the second value
+    is a list that contains the coefficients of the variables in
+    the optimal solution.
 
     """
     check_input_data(costs, vector_a, vector_b)
@@ -51,7 +55,6 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     transportation_table = find_first_transportation_table_amounts(
         empty_transportation_table, vector_a, vector_b)
 
-
     transportation_table, found_optimal_solution =\
         find_optimal_solution(transportation_table)
     while not found_optimal_solution:
@@ -61,7 +64,20 @@ def transportation_problem(costs=None, vector_a=None, vector_b=None):
     optimal_variables_vector = get_optimal_solution_vector(
         transportation_table, balancing_flag)
 
-    return optimal_variables_vector
+    optimal_value = get_optimal_solution_value(
+        transportation_table, optimal_variables_vector)
+
+    return optimal_value, optimal_variables_vector
+
+
+def get_optimal_solution_value(transportation_table, optimal_variables_vector):
+    optimal_value = 0
+    counter = 0
+    for row in transportation_table:
+        for cell in row:
+            optimal_value += cell.cost*optimal_variables_vector[counter]
+            counter += 1
+    return optimal_value
 
 
 def get_optimal_solution_vector(transportation_table, balancing_flag):
